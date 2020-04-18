@@ -1,3 +1,5 @@
+-- Table with all available territories of the game. Each key contains a table with an inner "borders" table,
+-- which is a list of other territories keys.
 return {
 	brazil = {
 		borders = { "argentina", "peru", "venezuela", "algeria" },

@@ -1,3 +1,6 @@
+-- Table with all available continents in the game. Each key has a table with two fields: "armies_when_conquered" (number of
+-- armies to add to the player if he have the continent conquered in the end of a turn) and "territories" (list of keys to the
+-- territories table).
 return {
 	north_america = {
 		territories = {

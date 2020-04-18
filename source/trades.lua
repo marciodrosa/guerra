@@ -1,3 +1,5 @@
+-- Table which each value is the number or armies to add to the player when trading cards,
+-- and the key is the trade number (first trade of the game, second trade, third trade...).
 local trades = {
 	[1] = 4,
 	[2] = 6,

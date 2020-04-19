@@ -5,6 +5,8 @@
 -- The description of each goal should be in the idiom tables, where the key of the goal in the goals table is equal to the key in the
 -- idiom.goals table.
 
+local continents = require "continents"
+
 local function can_army_be_defeated_by_player(army, player, state)
 	local is_army_in_the_game = false
 	local is_army_the_player = false
@@ -51,6 +53,14 @@ local function check_achivement_of_defeat_army(army_color, player, state)
 	else
 		return get_number_or_conquered_territories_by_player(player, state) >= 24
 	end
+end
+
+local function is_continent_conquered_by_player(continent, player, state)
+	local territories = continents[continent].territories
+	for i, territory_key in ipairs(territories) do
+		if state.territories[territory_key].owner_player ~= player then return false end
+	end
+	return true
 end
 
 return {
@@ -111,6 +121,12 @@ return {
 
 		can_player_receive = function(player, state)
 			return true
+		end
+	},
+
+	conquer_north_america_and_africa = {
+		achieved = function(player, state)
+			return is_continent_conquered_by_player("north_america", player, state) and is_continent_conquered_by_player("africa", player, state)
 		end
 	},
 

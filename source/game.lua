@@ -36,7 +36,6 @@ local function distribute_goals_to_players(state)
 end
 
 local function distribute_territories_among_players(state)
-	state.territories = {}
 	local territories_keys = {}
 	for k, v in pairs(territories) do
 		table.insert(territories_keys, k)
@@ -44,22 +43,15 @@ local function distribute_territories_among_players(state)
 	territories_keys = shuffle_list(territories_keys)
 	local player_index = state.current_player
 	for i, territory_key in ipairs(territories_keys) do
-		state.territories[territory_key] = {
-			owner_player = player_index,
-			armies = 1			
-		}
+		state.territories[territory_key].owner_player = player_index
+		state.territories[territory_key].armies = 1
 		player_index = player_index + 1
 		if player_index > #state.players then player_index = 1 end
 	end
 end
 
-local function shuffle_and_put_cards_on_table(state)
-	local cards_indexes = {}
-	for i, v in ipairs(cards) do
-		table.insert(cards_indexes, i)
-	end
-	cards_indexes = shuffle_list(cards_indexes)
-	state.cards_on_table = cards_indexes
+local function shuffle_and_cards_on_table(state)
+	state.cards_on_table = shuffle_list(state.cards_on_table)
 end
 
 return {
@@ -85,7 +77,11 @@ return {
 			draw_player_to_start(game_instance.state)
 			distribute_goals_to_players(game_instance.state)
 			distribute_territories_among_players(game_instance.state)
-			shuffle_and_put_cards_on_table(game_instance.state)
+			shuffle_and_cards_on_table(game_instance.state)
+		end
+
+		-- 
+		function game_instance.put()
 		end
 
 		return game_instance

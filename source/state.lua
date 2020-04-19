@@ -2,7 +2,7 @@
 return {
 	new = function()
 		return {
-			idiom = "en_us",
+			idiom = "pt_br",
 			players = {
 			},
 			current_player = 1,

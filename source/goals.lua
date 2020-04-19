@@ -130,4 +130,16 @@ return {
 		end
 	},
 
+	conquer_asia_and_africa = {
+		achieved = function(player, state)
+			return is_continent_conquered_by_player("asia", player, state) and is_continent_conquered_by_player("africa", player, state)
+		end
+	},
+
+	conquer_north_america_and_oceania = {
+		achieved = function(player, state)
+			return is_continent_conquered_by_player("north_america", player, state) and is_continent_conquered_by_player("oceania", player, state)
+		end
+	},
+
 }

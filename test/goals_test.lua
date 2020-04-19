@@ -533,3 +533,151 @@ function test_goals.test_goal_conquer_south_america_and_asia_should_not_be_achie
 	-- then:
 	lu.assertFalse(goals.conquer_south_america_and_asia.achieved(2, state))
 end
+
+function test_goals.test_goal_conquer_europe_and_south_america_and_other_should_be_achieved_if_both_continents_are_fully_conquered_and_one_more()
+	-- given:
+	local state = {
+		territories = {
+			omsk = { owner_player = 2 },
+			aral = { owner_player = 2 },
+			middle_east = { owner_player = 2 },
+			dudinka = { owner_player = 2 },
+			siberia = { owner_player = 2 },
+			tchita = { owner_player = 2 },
+			mongolia = { owner_player = 2 },
+			china = { owner_player = 2 },
+			india = { owner_player = 2 },
+			vietnam = { owner_player = 2 },
+			vladivostok = { owner_player = 2 },
+			japan = { owner_player = 2 },
+			venezuela = { owner_player = 2 },
+			brazil = { owner_player = 2 },
+			peru = { owner_player = 2 },
+			argentina = { owner_player = 2 },
+			iceland = { owner_player = 2 },
+			england = { owner_player = 2 },
+			france = { owner_player = 2 },
+			germany = { owner_player = 2 },
+			sweden = { owner_player = 2 },
+			moscow = { owner_player = 2 },
+			poland = { owner_player = 2 },
+		}
+	}
+
+	-- then:
+	lu.assertTrue(goals.conquer_europe_and_south_america_and_other.achieved(2, state))
+end
+
+function test_goals.test_goal_conquer_europe_and_south_america_and_other_should_be_achieved_if_both_continents_are_fully_conquered_and_two_more()
+	-- given:
+	local state = {
+		territories = {
+			omsk = { owner_player = 2 },
+			aral = { owner_player = 2 },
+			middle_east = { owner_player = 2 },
+			dudinka = { owner_player = 2 },
+			siberia = { owner_player = 2 },
+			tchita = { owner_player = 2 },
+			mongolia = { owner_player = 2 },
+			china = { owner_player = 2 },
+			india = { owner_player = 2 },
+			vietnam = { owner_player = 2 },
+			vladivostok = { owner_player = 2 },
+			japan = { owner_player = 2 },
+			venezuela = { owner_player = 2 },
+			brazil = { owner_player = 2 },
+			peru = { owner_player = 2 },
+			argentina = { owner_player = 2 },
+			iceland = { owner_player = 2 },
+			england = { owner_player = 2 },
+			france = { owner_player = 2 },
+			germany = { owner_player = 2 },
+			sweden = { owner_player = 2 },
+			moscow = { owner_player = 2 },
+			poland = { owner_player = 2 },
+			sumatra = { owner_player = 2 },
+			borneo = { owner_player = 2 },
+			new_guinea = { owner_player = 2 },
+			australia = { owner_player = 2 },
+		}
+	}
+	
+	-- then:
+	lu.assertTrue(goals.conquer_europe_and_south_america_and_other.achieved(2, state))
+end
+
+function test_goals.test_goal_conquer_europe_and_south_america_and_other_should_not_be_achieved_if_three_continents_were_conquered_but_not_europe()
+	-- given:
+	local state = {
+		territories = {
+			omsk = { owner_player = 2 },
+			aral = { owner_player = 2 },
+			middle_east = { owner_player = 2 },
+			dudinka = { owner_player = 2 },
+			siberia = { owner_player = 2 },
+			tchita = { owner_player = 2 },
+			mongolia = { owner_player = 2 },
+			china = { owner_player = 2 },
+			india = { owner_player = 2 },
+			vietnam = { owner_player = 2 },
+			vladivostok = { owner_player = 2 },
+			japan = { owner_player = 2 },
+			venezuela = { owner_player = 2 },
+			brazil = { owner_player = 2 },
+			peru = { owner_player = 2 },
+			argentina = { owner_player = 2 },
+			iceland = { owner_player = 3 },
+			england = { owner_player = 2 },
+			france = { owner_player = 2 },
+			germany = { owner_player = 2 },
+			sweden = { owner_player = 2 },
+			moscow = { owner_player = 2 },
+			poland = { owner_player = 2 },
+			sumatra = { owner_player = 2 },
+			borneo = { owner_player = 2 },
+			new_guinea = { owner_player = 2 },
+			australia = { owner_player = 2 },
+		}
+	}
+	
+	-- then:
+	lu.assertFalse(goals.conquer_europe_and_south_america_and_other.achieved(2, state))
+end
+
+function test_goals.test_goal_conquer_europe_and_south_america_and_other_should_not_be_achieved_if_three_continents_were_conquered_but_not_south_america()
+	-- given:
+	local state = {
+		territories = {
+			omsk = { owner_player = 2 },
+			aral = { owner_player = 2 },
+			middle_east = { owner_player = 2 },
+			dudinka = { owner_player = 2 },
+			siberia = { owner_player = 2 },
+			tchita = { owner_player = 2 },
+			mongolia = { owner_player = 2 },
+			china = { owner_player = 2 },
+			india = { owner_player = 2 },
+			vietnam = { owner_player = 2 },
+			vladivostok = { owner_player = 2 },
+			japan = { owner_player = 2 },
+			venezuela = { owner_player = 3 },
+			brazil = { owner_player = 2 },
+			peru = { owner_player = 2 },
+			argentina = { owner_player = 2 },
+			iceland = { owner_player = 2 },
+			england = { owner_player = 2 },
+			france = { owner_player = 2 },
+			germany = { owner_player = 2 },
+			sweden = { owner_player = 2 },
+			moscow = { owner_player = 2 },
+			poland = { owner_player = 2 },
+			sumatra = { owner_player = 2 },
+			borneo = { owner_player = 2 },
+			new_guinea = { owner_player = 2 },
+			australia = { owner_player = 2 },
+		}
+	}
+	
+	-- then:
+	lu.assertFalse(goals.conquer_europe_and_south_america_and_other.achieved(2, state))
+end

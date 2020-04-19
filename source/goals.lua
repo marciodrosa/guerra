@@ -58,9 +58,19 @@ end
 local function is_continent_conquered_by_player(continent, player, state)
 	local territories = continents[continent].territories
 	for i, territory_key in ipairs(territories) do
-		if state.territories[territory_key].owner_player ~= player then return false end
+		if state.territories[territory_key] == nil or state.territories[territory_key].owner_player ~= player then return false end
 	end
 	return true
+end
+
+local function get_number_of_continents_conquered_by_player(player, state)
+	local count = 0
+	for continent_key, continent in pairs(continents) do
+		if is_continent_conquered_by_player(continent_key, player, state) then
+			count = count + 1
+		end
+	end
+	return count
 end
 
 return {
@@ -145,6 +155,12 @@ return {
 	conquer_south_america_and_asia = {
 		achieved = function(player, state)
 			return is_continent_conquered_by_player("south_america", player, state) and is_continent_conquered_by_player("asia", player, state)
+		end
+	},
+
+	conquer_europe_and_south_america_and_other = {
+		achieved = function(player, state)
+			return is_continent_conquered_by_player("europe", player, state) and is_continent_conquered_by_player("south_america", player, state) and get_number_of_continents_conquered_by_player(player, state) >= 3
 		end
 	},
 

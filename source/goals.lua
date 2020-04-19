@@ -164,4 +164,10 @@ return {
 		end
 	},
 
+	conquer_europe_and_oceania_and_other = {
+		achieved = function(player, state)
+			return is_continent_conquered_by_player("europe", player, state) and is_continent_conquered_by_player("oceania", player, state) and get_number_of_continents_conquered_by_player(player, state) >= 3
+		end
+	},
+
 }

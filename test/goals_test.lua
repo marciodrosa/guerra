@@ -946,4 +946,145 @@ function test_goals.test_goal_conquer_18_territories_with_2_armies_in_each_shoul
 	lu.assertFalse(goals.conquer_18_territories_with_2_armies_in_each.achieved(2, state))
 end
 
+function test_goals.test_goal_conquer_24_territories_should_be_achieved()
+	-- given:
+	local state = {
+		territories = {
+			alaska = { owner_player = 2 },
+			mackenzie = { owner_player = 2 },
+			greenland = { owner_player = 2 },
+			vancouver = { owner_player = 2 },
+			ottawa = { owner_player = 2 },
+			labrador = { owner_player = 2 },
+			california = { owner_player = 2 },
+			new_york = { owner_player = 2 },
+			mexico = { owner_player = 2 },
+			algeria = { owner_player = 2 },
+			egypt = { owner_player = 2 },
+			sudan = { owner_player = 2 },
+			congo = { owner_player = 2 },
+			south_africa = { owner_player = 2 },
+			madagascar = { owner_player = 2 },
+			venezuela = { owner_player = 2 },
+			brazil = { owner_player = 2 },
+			peru = { owner_player = 2 },
+			argentina = { owner_player = 2 },
+			iceland = { owner_player = 2 },
+			england = { owner_player = 2 },
+			germany = { owner_player = 2 },
+			moscow = { owner_player = 2 },
+			sweden = { owner_player = 2 },
+		}
+	}
+
+	-- then:
+	lu.assertTrue(goals.conquer_24_territories.achieved(2, state))
+end
+
+function test_goals.test_goal_conquer_24_territories_should_be_achieved()
+	-- given:
+	local state = {
+		territories = {
+			alaska = { owner_player = 2 },
+			mackenzie = { owner_player = 2 },
+			greenland = { owner_player = 2 },
+			vancouver = { owner_player = 2 },
+			ottawa = { owner_player = 2 },
+			labrador = { owner_player = 2 },
+			california = { owner_player = 2 },
+			new_york = { owner_player = 2 },
+			mexico = { owner_player = 2 },
+			algeria = { owner_player = 2 },
+			egypt = { owner_player = 2 },
+			sudan = { owner_player = 2 },
+			congo = { owner_player = 2 },
+			south_africa = { owner_player = 2 },
+			madagascar = { owner_player = 2 },
+			venezuela = { owner_player = 2 },
+			brazil = { owner_player = 2 },
+			peru = { owner_player = 2 },
+			argentina = { owner_player = 2 },
+			iceland = { owner_player = 2 },
+			england = { owner_player = 2 },
+			germany = { owner_player = 2 },
+			moscow = { owner_player = 2 },
+			sweden = { owner_player = 2 },
+		}
+	}
+
+	-- then:
+	lu.assertTrue(goals.conquer_24_territories.achieved(2, state))
+end
+
+function test_goals.test_goal_conquer_24_territories_should_be_achieved_with_more_than_24_territories()
+	-- given:
+	local state = {
+		territories = {
+			alaska = { owner_player = 2 },
+			mackenzie = { owner_player = 2 },
+			greenland = { owner_player = 2 },
+			vancouver = { owner_player = 2 },
+			ottawa = { owner_player = 2 },
+			labrador = { owner_player = 2 },
+			california = { owner_player = 2 },
+			new_york = { owner_player = 2 },
+			mexico = { owner_player = 2 },
+			algeria = { owner_player = 2 },
+			egypt = { owner_player = 2 },
+			sudan = { owner_player = 2 },
+			congo = { owner_player = 2 },
+			south_africa = { owner_player = 2 },
+			madagascar = { owner_player = 2 },
+			venezuela = { owner_player = 2 },
+			brazil = { owner_player = 2 },
+			peru = { owner_player = 2 },
+			argentina = { owner_player = 2 },
+			iceland = { owner_player = 2 },
+			england = { owner_player = 2 },
+			germany = { owner_player = 2 },
+			moscow = { owner_player = 2 },
+			sweden = { owner_player = 2 },
+			japan = { owner_player = 2 },
+		}
+	}
+
+	-- then:
+	lu.assertTrue(goals.conquer_24_territories.achieved(2, state))
+end
+
+function test_goals.test_goal_conquer_24_territories_should_not_be_achieved_with_less_than_24_territories()
+	-- given:
+	local state = {
+		territories = {
+			alaska = { owner_player = 2 },
+			mackenzie = { owner_player = 2 },
+			greenland = { owner_player = 2 },
+			vancouver = { owner_player = 2 },
+			ottawa = { owner_player = 2 },
+			labrador = { owner_player = 2 },
+			california = { owner_player = 2 },
+			new_york = { owner_player = 2 },
+			mexico = { owner_player = 2 },
+			algeria = { owner_player = 2 },
+			egypt = { owner_player = 2 },
+			sudan = { owner_player = 2 },
+			congo = { owner_player = 2 },
+			south_africa = { owner_player = 2 },
+			madagascar = { owner_player = 2 },
+			venezuela = { owner_player = 2 },
+			brazil = { owner_player = 2 },
+			peru = { owner_player = 2 },
+			argentina = { owner_player = 2 },
+			iceland = { owner_player = 2 },
+			england = { owner_player = 2 },
+			germany = { owner_player = 2 },
+			moscow = { owner_player = 2 },
+			sweden = { owner_player = 3 },
+		}
+	}
+
+	-- then:
+	lu.assertFalse(goals.conquer_24_territories.achieved(2, state))
+end
+
 

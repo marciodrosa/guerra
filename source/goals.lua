@@ -182,4 +182,9 @@ return {
 		end
 	},
 
+	conquer_24_territories = {
+		achieved = function(player, state)
+			return get_number_or_conquered_territories_by_player(player, state) >= 24
+		end
+	},
 }

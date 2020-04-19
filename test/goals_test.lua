@@ -830,3 +830,120 @@ function test_goals.test_goal_conquer_europe_and_oceania_and_other_should_not_be
 	lu.assertFalse(goals.conquer_europe_and_oceania_and_other.achieved(2, state))
 end
 
+function test_goals.test_goal_conquer_18_territories_with_2_armies_in_each_should_be_achieved()
+	-- given:
+	local state = {
+		territories = {
+			omsk = { owner_player = 2, armies = 2 },
+			aral = { owner_player = 2, armies = 2 },
+			middle_east = { owner_player = 2, armies = 2 },
+			dudinka = { owner_player = 2, armies = 3 },
+			siberia = { owner_player = 2, armies = 2 },
+			tchita = { owner_player = 2, armies = 2 },
+			mongolia = { owner_player = 2, armies = 2 },
+			china = { owner_player = 2, armies = 3 },
+			india = { owner_player = 2, armies = 2 },
+			vietnam = { owner_player = 2, armies = 2 },
+			vladivostok = { owner_player = 2, armies = 3 },
+			japan = { owner_player = 2, armies = 2 },
+			venezuela = { owner_player = 2, armies = 2 },
+			brazil = { owner_player = 2, armies = 2 },
+			peru = { owner_player = 2, armies = 3 },
+			argentina = { owner_player = 2, armies = 2 },
+			iceland = { owner_player = 2, armies = 2 },
+			england = { owner_player = 2, armies = 2 },
+		}
+	}
+	
+	-- then:
+	lu.assertTrue(goals.conquer_18_territories_with_2_armies_in_each.achieved(2, state))
+end
+
+function test_goals.test_goal_conquer_18_territories_with_2_armies_in_each_should_be_achieved_with_more_than_18_territories()
+	-- given:
+	local state = {
+		territories = {
+			omsk = { owner_player = 2, armies = 2 },
+			aral = { owner_player = 2, armies = 2 },
+			middle_east = { owner_player = 2, armies = 2 },
+			dudinka = { owner_player = 2, armies = 3 },
+			siberia = { owner_player = 2, armies = 2 },
+			tchita = { owner_player = 2, armies = 2 },
+			mongolia = { owner_player = 2, armies = 2 },
+			china = { owner_player = 2, armies = 3 },
+			india = { owner_player = 2, armies = 2 },
+			vietnam = { owner_player = 2, armies = 2 },
+			vladivostok = { owner_player = 2, armies = 3 },
+			japan = { owner_player = 2, armies = 2 },
+			venezuela = { owner_player = 2, armies = 2 },
+			brazil = { owner_player = 2, armies = 2 },
+			peru = { owner_player = 2, armies = 3 },
+			argentina = { owner_player = 2, armies = 2 },
+			iceland = { owner_player = 2, armies = 2 },
+			england = { owner_player = 2, armies = 2 },
+			germany = { owner_player = 2, armies = 2 },
+		}
+	}
+	
+	-- then:
+	lu.assertTrue(goals.conquer_18_territories_with_2_armies_in_each.achieved(2, state))
+end
+
+function test_goals.test_goal_conquer_18_territories_with_2_armies_in_each_should_not_be_achieved_if_less_than_18_territories()
+	-- given:
+	local state = {
+		territories = {
+			omsk = { owner_player = 2, armies = 2 },
+			aral = { owner_player = 2, armies = 2 },
+			middle_east = { owner_player = 2, armies = 2 },
+			dudinka = { owner_player = 2, armies = 3 },
+			siberia = { owner_player = 2, armies = 2 },
+			tchita = { owner_player = 2, armies = 2 },
+			mongolia = { owner_player = 2, armies = 2 },
+			china = { owner_player = 2, armies = 3 },
+			india = { owner_player = 2, armies = 2 },
+			vietnam = { owner_player = 2, armies = 2 },
+			vladivostok = { owner_player = 2, armies = 3 },
+			japan = { owner_player = 2, armies = 2 },
+			venezuela = { owner_player = 2, armies = 2 },
+			brazil = { owner_player = 2, armies = 2 },
+			peru = { owner_player = 2, armies = 3 },
+			argentina = { owner_player = 2, armies = 2 },
+			iceland = { owner_player = 2, armies = 2 },
+		}
+	}
+	
+	-- then:
+	lu.assertFalse(goals.conquer_18_territories_with_2_armies_in_each.achieved(2, state))
+end
+
+function test_goals.test_goal_conquer_18_territories_with_2_armies_in_each_should_not_be_achieved_if_there_are_18_conquered_territories_but_some_does_not_have_two_armies_in_it()
+	-- given:
+	local state = {
+		territories = {
+			omsk = { owner_player = 2, armies = 2 },
+			aral = { owner_player = 2, armies = 2 },
+			middle_east = { owner_player = 2, armies = 2 },
+			dudinka = { owner_player = 2, armies = 3 },
+			siberia = { owner_player = 2, armies = 2 },
+			tchita = { owner_player = 2, armies = 2 },
+			mongolia = { owner_player = 2, armies = 2 },
+			china = { owner_player = 2, armies = 3 },
+			india = { owner_player = 2, armies = 2 },
+			vietnam = { owner_player = 2, armies = 2 },
+			vladivostok = { owner_player = 2, armies = 1 },
+			japan = { owner_player = 2, armies = 2 },
+			venezuela = { owner_player = 2, armies = 2 },
+			brazil = { owner_player = 2, armies = 2 },
+			peru = { owner_player = 2, armies = 3 },
+			argentina = { owner_player = 2, armies = 2 },
+			iceland = { owner_player = 2, armies = 2 },
+			england = { owner_player = 2, armies = 2 },
+		}
+	}
+	
+	-- then:
+	lu.assertFalse(goals.conquer_18_territories_with_2_armies_in_each.achieved(2, state))
+end
+
+

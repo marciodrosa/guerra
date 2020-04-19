@@ -170,4 +170,16 @@ return {
 		end
 	},
 
+	conquer_18_territories_with_2_armies_in_each = {
+		achieved = function(player, state)
+			local count = 0
+			for territory_key, territory in pairs(state.territories) do
+				if territory.owner_player == player and territory.armies >= 2 then
+					count = count + 1
+				end
+			end
+			return count >= 18
+		end
+	},
+
 }

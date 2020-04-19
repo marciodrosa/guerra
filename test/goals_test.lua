@@ -129,3 +129,63 @@ function test_goals.test_goal_defeat_blue_army_should_return_false_if_24_territo
 	-- then:
 	lu.assertFalse(goals.defeat_blue_army.achieved(2, state))
 end
+
+function test_goals.test_goal_defeat_red_army_should_return_true_if_it_was_defeated_by_the_player()
+	-- given:
+	local state = {
+		players = {
+			{ army = "blue" }, { army = "green" }, { army = "red", defeated_by_player = 2 }, { army = "black" },
+		}
+	}
+
+	-- then:
+	lu.assertTrue(goals.defeat_red_army.achieved(2, state))
+end
+
+function test_goals.test_goal_defeat_yellow_army_should_return_true_if_it_was_defeated_by_the_player()
+	-- given:
+	local state = {
+		players = {
+			{ army = "blue" }, { army = "green" }, { army = "yellow", defeated_by_player = 2 }, { army = "black" },
+		}
+	}
+
+	-- then:
+	lu.assertTrue(goals.defeat_yellow_army.achieved(2, state))
+end
+
+function test_goals.test_goal_defeat_white_army_should_return_true_if_it_was_defeated_by_the_player()
+	-- given:
+	local state = {
+		players = {
+			{ army = "blue" }, { army = "green" }, { army = "white", defeated_by_player = 2 }, { army = "black" },
+		}
+	}
+
+	-- then:
+	lu.assertTrue(goals.defeat_white_army.achieved(2, state))
+end
+
+function test_goals.test_goal_defeat_green_army_should_return_true_if_it_was_defeated_by_the_player()
+	-- given:
+	local state = {
+		players = {
+			{ army = "blue" }, { army = "white" }, { army = "green", defeated_by_player = 2 }, { army = "black" },
+		}
+	}
+
+	-- then:
+	lu.assertTrue(goals.defeat_green_army.achieved(2, state))
+end
+
+function test_goals.test_goal_defeat_black_army_should_return_true_if_it_was_defeated_by_the_player()
+	-- given:
+	local state = {
+		players = {
+			{ army = "blue" }, { army = "white" }, { army = "black", defeated_by_player = 2 }, { army = "green" },
+		}
+	}
+
+	-- then:
+	lu.assertTrue(goals.defeat_black_army.achieved(2, state))
+end

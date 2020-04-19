@@ -45,19 +45,73 @@ local function get_number_or_conquered_territories_by_player(player, state)
 	return conquered_territories_count
 end
 
+local function check_achivement_of_defeat_army(army_color, player, state)
+	if can_army_be_defeated_by_player(army_color, player, state) then
+		return is_army_defeated_by_player(army_color, player, state)
+	else
+		return get_number_or_conquered_territories_by_player(player, state) >= 24
+	end
+end
+
 return {
 	defeat_blue_army = {
-
 		achieved = function(player, state)
-			if can_army_be_defeated_by_player("blue", player, state) then
-				return is_army_defeated_by_player("blue", player, state)
-			else
-				return get_number_or_conquered_territories_by_player(player, state) >= 24
-			end
+			return check_achivement_of_defeat_army("blue", player, state)
 		end,
 
 		can_player_receive = function(player, state)
 			return true
 		end
-	}
+	},
+
+	defeat_yellow_army = {
+		achieved = function(player, state)
+			return check_achivement_of_defeat_army("yellow", player, state)
+		end,
+
+		can_player_receive = function(player, state)
+			return true
+		end
+	},
+
+	defeat_white_army = {
+		achieved = function(player, state)
+			return check_achivement_of_defeat_army("white", player, state)
+		end,
+
+		can_player_receive = function(player, state)
+			return true
+		end
+	},
+
+	defeat_green_army = {
+		achieved = function(player, state)
+			return check_achivement_of_defeat_army("green", player, state)
+		end,
+
+		can_player_receive = function(player, state)
+			return true
+		end
+	},
+
+	defeat_black_army = {
+		achieved = function(player, state)
+			return check_achivement_of_defeat_army("black", player, state)
+		end,
+
+		can_player_receive = function(player, state)
+			return true
+		end
+	},
+
+	defeat_red_army = {
+		achieved = function(player, state)
+			return check_achivement_of_defeat_army("red", player, state)
+		end,
+
+		can_player_receive = function(player, state)
+			return true
+		end
+	},
+
 }

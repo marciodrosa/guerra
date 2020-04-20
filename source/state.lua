@@ -6,6 +6,8 @@ local cards = require("cards")
 return {
 
 	-- Returns a new state table with a few default values and the following fields:
+	-- - status: string with current status of the game. Accepts "not_started", "arrange_armies", "battle", "rearrange_armies"
+	-- and "finished".
 	-- - idiom: key to the idioms table.
 	-- - players: empty list of players. It expects tables with field "name" and "army" (the army color).
 	-- - current_player: current player index that is playing now.
@@ -18,6 +20,7 @@ return {
 	-- - cards_on_table: array of indexes that points to the cards table.
 	new = function()
 		local state_instance = {
+			status = "not_started",
 			idiom = "pt_br",
 			players = {
 			},

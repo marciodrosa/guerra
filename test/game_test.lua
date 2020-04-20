@@ -36,6 +36,76 @@ function test_game.test_should_enter_players()
 	lu.assertEquals(g.state.players[4].army, "blue")
 end
 
+function test_game.test_should_not_enter_new_player_if_6_already_entered()
+	-- given:
+	local g = game.new()
+
+	-- when:
+	g.enter_player("John", "red")
+	g.enter_player("Paul", "black")
+	g.enter_player("George", "white")
+	g.enter_player("Ringo", "blue")
+	g.enter_player("Yoko", "green")
+	g.enter_player("Michael Jackson", "yellow")
+	g.enter_player("Stallone", "red")
+
+	-- then:
+	lu.assertEquals(g.state.players[1].name, "John")
+	lu.assertEquals(g.state.players[2].name, "Paul")
+	lu.assertEquals(g.state.players[3].name, "George")
+	lu.assertEquals(g.state.players[4].name, "Ringo")
+	lu.assertEquals(g.state.players[5].name, "Yoko")
+	lu.assertEquals(g.state.players[6].name, "Michael Jackson")
+	lu.assertNil(g.state.players[7])
+end
+
+function test_game.test_should_not_enter_player_if_name_is_already_in_use()
+	-- given:
+	local g = game.new()
+
+	-- when:
+	g.enter_player("John", "red")
+	g.enter_player("Paul", "black")
+	g.enter_player("George", "white")
+	g.enter_player("Paul", "yellow")
+
+	-- then:
+	lu.assertEquals(g.state.players[1].name, "John")
+	lu.assertEquals(g.state.players[2].name, "Paul")
+	lu.assertEquals(g.state.players[3].name, "George")
+	lu.assertNil(g.state.players[4])
+end
+
+function test_game.test_should_not_enter_player_if_army_is_already_in_use()
+	-- given:
+	local g = game.new()
+
+	-- when:
+	g.enter_player("John", "red")
+	g.enter_player("Paul", "black")
+	g.enter_player("George", "black")
+
+	-- then:
+	lu.assertEquals(g.state.players[1].name, "John")
+	lu.assertEquals(g.state.players[2].name, "Paul")
+	lu.assertNil(g.state.players[3])
+end
+
+function test_game.test_should_not_enter_player_if_army_color_is_unknow()
+	-- given:
+	local g = game.new()
+
+	-- when:
+	g.enter_player("John", "red")
+	g.enter_player("Paul", "black")
+	g.enter_player("George", "silver")
+
+	-- then:
+	lu.assertEquals(g.state.players[1].name, "John")
+	lu.assertEquals(g.state.players[2].name, "Paul")
+	lu.assertNil(g.state.players[3])
+end
+
 function test_game.test_should_draw_starter_player_when_start()
 	-- given:
 	local g = game.new()

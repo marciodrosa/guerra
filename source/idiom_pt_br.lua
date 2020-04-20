@@ -14,5 +14,22 @@ return {
 		conquer_europe_and_oceania_and_other = "SEU OBJETIVO É conquistar na totalidade a EUROPA, a OCEANIA e mais um terceiro continente à sua escolha.",
 		conquer_18_territories_with_2_armies_in_each = "SEU OBJETIVO É conquistar 18 TERRITÓRIOS e ocupar cada um deles com pelo menos dois exércitos.",
 		conquer_24_territories = "SEU OBJETIVO É conquistar 24 TERRITÓRIOS à sua escolha.",
+	},
+	validations = {
+		expected_status = {
+			not_started = "Esta ação só pode ser realizada antes do começo da partida.",
+		},
+		max_number_of_players_already_achieved = "O máximo de jogadores já foi atingido (6).",
+		player_name_already_in_use = "Já existe um jogador com o nome %s.",
+		player_color_already_in_use = "Já existe um jogador com o exército %s.",
+		invalid_color = "Cor de exército inválida ou desconhecida",
+	},
+	armies = {
+		blue = "Azul",
+		yellow = "Amarelo",
+		white = "Branco",
+		green = "Verde",
+		black = "Preto",
+		red = "Vermelho",
 	}
 }

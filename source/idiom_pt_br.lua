@@ -22,7 +22,7 @@ return {
 		max_number_of_players_already_achieved = "O máximo de jogadores já foi atingido (6).",
 		player_name_already_in_use = "Já existe um jogador com o nome %s.",
 		player_color_already_in_use = "Já existe um jogador com o exército %s.",
-		invalid_color = "Cor de exército inválida ou desconhecida",
+		invalid_color = "Cor de exército inválida ou desconhecida.",
 	},
 	armies = {
 		blue = "Azul",

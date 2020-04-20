@@ -11,5 +11,6 @@ require('idioms_test')
 require('state_test')
 require('territories_test')
 require('trades_test')
+require('validators_test')
 
 os.exit(lu.LuaUnit.run())

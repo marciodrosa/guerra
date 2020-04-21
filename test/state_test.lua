@@ -25,4 +25,12 @@ function test_state.test_should_create_new_state()
 	for i, v in ipairs(s.cards_on_table) do
 		lu.assertEquals(v, i)
 	end
+	lu.assertIsTable(s.armies_arrangement)
+	lu.assertEquals(s.armies_arrangement.total_armies_to_put, 0)
+	lu.assertIsTable(s.armies_arrangement.armies_to_put_by_territory)
+	lu.assertIsTable(s.armies_arrangement.armies_to_put_by_continent)
+	lu.assertIsTable(s.armies_arrangement.history)
+	lu.assertEquals(s.armies_arrangement.history.total_armies, 0)
+	lu.assertIsTable(s.armies_arrangement.history.armies_by_territory)
+	lu.assertIsTable(s.armies_arrangement.history.armies_by_continent)
 end

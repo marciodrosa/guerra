@@ -88,6 +88,16 @@ return {
 			return true
 		end
 
+		local function validate_before_put_armies(number_of_armies, territory)
+			for i, validator in ipairs(validators.put_armies_validations) do
+				local ok, message = pcall(validator, state, number_of_armies, territory)
+				if not ok then
+					return false
+				end
+			end
+			return true
+		end
+
 		-- Adds a player to the game. Must be done before call the "start" function.
 		-- The army argument must be a valid color: black, white, blue, red, green or yellow.
 		-- It's not allowed to enter players with same name or army color.
@@ -110,10 +120,13 @@ return {
 			end
 		end
 
-		-- Put the given amount of armies in the given territory. After the current player puts all the armies that he cards_on_table
-		-- put in the board, the game passes to the next player, unless the placement is invalid. In this case, call abort() to restart
+		-- Put the given amount of armies in the given territory. After the current player puts all the armies he had,
+		-- the game passes to the next player, unless the placement is invalid. In this case, call abort() to restart
 		-- the placement.
 		function game_instance.put(number_of_armies, territory)
+			if validate_before_put_armies(number_of_armies, territory) then
+				
+			end
 		end
 
 		function game_instance.abort()

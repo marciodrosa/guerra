@@ -6,7 +6,7 @@ local cards = require("cards")
 return {
 
 	-- Returns a new state table with a few default values and the following fields:
-	-- - status: string with current status of the game. Accepts "not_started", "arrange_armies", "battle", "rearrange_armies"
+	-- - status: string with current status of the game. Accepts "not_started", "arrange_armies", "battle", "moving_armies"
 	-- and "finished".
 	-- - idiom: key to the idioms table.
 	-- - players: empty list of players. It expects tables with field "name" and "army" (the army color).
@@ -31,6 +31,16 @@ return {
 			territories = {
 			},
 			cards_on_table = {},
+			armies_arrangement = {
+				total_armies_to_put = 0,
+				armies_to_put_by_territory = {},
+				armies_to_put_by_continent = {},
+				history = {
+					total_armies = 0,
+					armies_by_territory = {},
+					armies_by_continent = {},
+				}
+			}
 		}
 		for k, v in pairs(territories) do
 			state_instance.territories[k] = { owner_player = 1, armies = 0 }

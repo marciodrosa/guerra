@@ -78,8 +78,19 @@ return {
 			return true
 		end
 
+		local function validate_before_start_game()
+			for i, validator in ipairs(validators.start_game_validations) do
+				local ok, message = pcall(validator, state)
+				if not ok then
+					return false
+				end
+			end
+			return true
+		end
+
 		-- Adds a player to the game. Must be done before call the "start" function.
 		-- The army argument must be a valid color: black, white, blue, red, green or yellow.
+		-- It's not allowed to enter players with same name or army color.
 		function game_instance.enter_player(name, army)
 			if validate_before_enter_player(name, army) then
 				table.insert(game_instance.state.players, { name = name, army = army })
@@ -87,12 +98,16 @@ return {
 		end
 
 		-- Starts the game. Must be called after at least two players have entered. Draws the player that starts the round,
-		-- distributes the goals and territories and put the deck of suffled cards in the table.
+		-- distributes the goals and territories and put the deck of suffled cards in the table. At least two players must
+		-- have entered the game before the start.
 		function game_instance.start()
-			draw_player_to_start(game_instance.state)
-			distribute_goals_to_players(game_instance.state)
-			distribute_territories_among_players(game_instance.state)
-			shuffle_and_cards_on_table(game_instance.state)
+			if validate_before_start_game() then
+				draw_player_to_start(game_instance.state)
+				distribute_goals_to_players(game_instance.state)
+				distribute_territories_among_players(game_instance.state)
+				shuffle_and_cards_on_table(game_instance.state)
+				game_instance.state.status = "arrange_armies"
+			end
 		end
 
 		-- Put the given amount of armies in the given territory. After the current player puts all the armies that he cards_on_table

@@ -240,3 +240,28 @@ function test_game.test_should_shuffle_and_put_cards_on_the_table_when_start_gam
 		end
 	end
 end
+
+function test_game.test_should_set_status_to_arrange_armies_after_start_the_game()
+	-- given:
+	local g = game.new()
+	g.enter_player("John", "red")
+	g.enter_player("Paul", "black")
+
+	-- when:
+	g.start()
+
+	-- then:
+	lu.assertEquals(g.state.status, "arrange_armies")
+end
+
+function test_game.test_should_not_start_game_if_there_is_less_then_two_players()
+	-- given:
+	local g = game.new()
+	g.enter_player("John", "red")
+
+	-- when:
+	g.start()
+
+	-- then:
+	lu.assertEquals(g.state.status, "not_started")
+end

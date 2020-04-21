@@ -39,6 +39,14 @@ return {
 		function(state, name, army)
 			validate_army_color(state, army)
 		end,
+	},
+
+	start_game_validations = {
+		expected_status("not_started"),
+
+		function(state)
+			if #state.players < 2 then error(idioms[state.idiom].validations.cant_start_with_less_than_two_players, 0) end
+		end
 	}
 
 }

@@ -23,6 +23,7 @@ return {
 		player_name_already_in_use = "Já existe um jogador com o nome %s.",
 		player_color_already_in_use = "Já existe um jogador com o exército %s.",
 		invalid_color = "Cor de exército inválida ou desconhecida.",
+		cant_start_with_less_than_two_players = "Não é possível iniciar o jogo até que pelo menos dois jogadores tenham entrado.",
 	},
 	armies = {
 		blue = "Azul",

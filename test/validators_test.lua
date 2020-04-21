@@ -8,6 +8,12 @@ local function execute_enter_player_validations(state, name, army)
 	end
 end
 
+local function execute_start_game_validations(state)
+	for i, f in ipairs(validators.start_game_validations) do
+		f(state)
+	end
+end
+
 function test_validators.test_validate_enter_player()
 	-- given:
 	local state = {
@@ -22,7 +28,7 @@ function test_validators.test_validate_enter_player()
 		}
 	}
 
-	-- when:
+	-- then:
 	execute_enter_player_validations(state, "Michael Jackson", "blue")
 end
 
@@ -41,7 +47,7 @@ function test_validators.test_should_not_validate_enter_player_if_there_are_alre
 		}
 	}
 
-	-- when:
+	-- then:
 	lu.assertErrorMsgEquals("O máximo de jogadores já foi atingido (6).", execute_enter_player_validations, state, "Michael Jackson", "blue")
 end
 
@@ -56,7 +62,7 @@ function test_validators.test_should_not_validate_enter_player_if_current_status
 		}
 	}
 
-	-- when:
+	-- then:
 	lu.assertErrorMsgEquals("Esta ação só pode ser realizada antes do começo da partida.", execute_enter_player_validations, state, "Michael Jackson", "blue")
 end
 
@@ -72,7 +78,7 @@ function test_validators.test_should_not_validate_enter_player_if_the_name_is_al
 		}
 	}
 
-	-- when:
+	-- then:
 	lu.assertErrorMsgEquals("Já existe um jogador com o nome Paul.", execute_enter_player_validations, state, "Paul", "blue")
 end
 
@@ -88,7 +94,7 @@ function test_validators.test_should_not_validate_enter_player_if_the_army_color
 		}
 	}
 
-	-- when:
+	-- then:
 	lu.assertErrorMsgEquals("Já existe um jogador com o exército Branco.", execute_enter_player_validations, state, "Ringo", "white")
 end
 
@@ -104,6 +110,50 @@ function test_validators.test_should_not_validate_enter_player_if_the_army_color
 		}
 	}
 
-	-- when:
+	-- then:
 	lu.assertErrorMsgEquals("Cor de exército inválida ou desconhecida.", execute_enter_player_validations, state, "Ringo", "silver")
+end
+
+function test_validators.test_should_validate_start_game()
+	-- given:
+	local state = {
+		idiom = "pt_br",
+		status = "not_started",
+		players = {
+			{ name = "John", army = "black" },
+			{ name = "Paul", army = "white" },
+		}
+	}
+
+	-- then:
+	execute_start_game_validations(state)
+end
+
+function test_validators.test_should_not_validate_start_game_if_it_is_already_started()
+	-- given:
+	local state = {
+		idiom = "pt_br",
+		status = "battle",
+		players = {
+			{ name = "John", army = "black" },
+			{ name = "Paul", army = "white" },
+		}
+	}
+
+	-- then:
+	lu.assertErrorMsgEquals("Esta ação só pode ser realizada antes do começo da partida.", execute_start_game_validations, state)
+end
+
+function test_validators.test_should_not_validate_start_game_if_there_are_less_then_two_players()
+	-- given:
+	local state = {
+		idiom = "pt_br",
+		status = "not_started",
+		players = {
+			{ name = "John", army = "black" },
+		}
+	}
+
+	-- then:
+	lu.assertErrorMsgEquals("Não é possível iniciar o jogo até que pelo menos dois jogadores tenham entrado.", execute_start_game_validations, state)
 end

@@ -125,7 +125,7 @@ return {
 			for continent_key, continent in pairs(continents) do
 				local is_owned = true
 				for i, territory in ipairs(continent.territories) do
-					if state.territories[territory] ~= nil and state.territories[territory].owner_player ~= state.current_player then
+					if state.territories[territory] == nil or state.territories[territory].owner_player ~= state.current_player then
 						is_owned = false
 						break
 					end
@@ -137,21 +137,22 @@ return {
 
 		local function init_armies_arrangement()
 			state.armies_arrangement.total_armies_to_put = math.floor(#get_territories_owned_by_player() / 2)
-			state.armies_to_put_by_territory = {}
-			state.armies_to_put_by_continent = {}
+			state.armies_arrangement.remaining_armies_to_put = state.armies_arrangement.total_armies_to_put
+			state.armies_arrangement.armies_to_put_by_territory = {}
+			state.armies_arrangement.armies_to_put_by_continent = {}
 			local owned_continents = get_continents_owned_by_player()
 			for i, v in ipairs(owned_continents) do
-				state.armies_to_put_by_continent[v] = continents[v].armies_when_conquered
+				state.armies_arrangement.armies_to_put_by_continent[v] = continents[v].armies_when_conquered
 			end
-			state.remaining_armies_to_put_by_territory = {}
-			for k, v in pairs(state.armies_to_put_by_territory) do
-				state.remaining_armies_to_put_by_territory[k] = v
+			state.armies_arrangement.remaining_armies_to_put_by_territory = {}
+			for k, v in pairs(state.armies_arrangement.armies_to_put_by_territory) do
+				state.armies_arrangement.remaining_armies_to_put_by_territory[k] = v
 			end
-			state.remaining_armies_to_put_by_continent = {}
-			for k, v in pairs(state.armies_to_put_by_continent) do
-				state.remaining_armies_to_put_by_continent[k] = v
+			state.armies_arrangement.remaining_armies_to_put_by_continent = {}
+			for k, v in pairs(state.armies_arrangement.armies_to_put_by_continent) do
+				state.armies_arrangement.remaining_armies_to_put_by_continent[k] = v
 			end
-			state.armies_placed_by_territory = {}
+			state.armies_arrangement.armies_placed_by_territory = {}
 		end
 
 		local function commit_arrangement()

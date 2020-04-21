@@ -63,24 +63,24 @@ return {
 		end,
 
 		function(state, number_of_armies, territory)
-			local total_remaining_armies_to_put = state.armies_arrangement.total_armies_to_put - number_of_armies
+			local total_remaining_armies_to_put = state.armies_arrangement.remaining_armies_to_put - number_of_armies
 			if total_remaining_armies_to_put < 0 then
-				error(string.format(idioms[state.idiom].validations.player_has_only_x_armies_remaining_to_put, state.armies_arrangement.total_armies_to_put), 0)
+				error(string.format(idioms[state.idiom].validations.player_has_only_x_armies_remaining_to_put, state.armies_arrangement.remaining_armies_to_put), 0)
 			end
 		end,
 
 		function(state, number_of_armies, territory)
-			local total_remaining_armies_to_put = state.armies_arrangement.total_armies_to_put - number_of_armies
+			local total_remaining_armies_to_put = state.armies_arrangement.remaining_armies_to_put - number_of_armies
 			local missing_territories = {}
 			local armies_to_put_in_missing_territories = 0
-			for t, number_of_armies_to_put_in_territory in pairs(state.armies_arrangement.armies_to_put_by_territory) do
+			for t, number_of_armies_to_put_in_territory in pairs(state.armies_arrangement.remaining_armies_to_put_by_territory) do
 				if t ~= territory then
 					table.insert(missing_territories, { territory = idioms[state.idiom].territories[t], armies = number_of_armies_to_put_in_territory })
 					armies_to_put_in_missing_territories = armies_to_put_in_missing_territories + number_of_armies_to_put_in_territory
 				end
 			end
 			if total_remaining_armies_to_put < armies_to_put_in_missing_territories then
-				local message = string.format(idioms[state.idiom].validations.player_has_only_x_armies_remaining_to_distribute_between_the_following_territories, state.armies_arrangement.total_armies_to_put)
+				local message = string.format(idioms[state.idiom].validations.player_has_only_x_armies_remaining_to_distribute_between_the_following_territories, state.armies_arrangement.remaining_armies_to_put)
 				table.sort(missing_territories, function(v1, v2) return v1.territory < v2.territory end)
 				for i, v in ipairs(missing_territories) do
 					message = string.format("%s\n%s - %s", message, v.territory, v.armies)
@@ -90,7 +90,7 @@ return {
 		end,
 
 		function(state, number_of_armies, territory)
-			local total_remaining_armies_to_put = state.armies_arrangement.total_armies_to_put - number_of_armies
+			local total_remaining_armies_to_put = state.armies_arrangement.remaining_armies_to_put - number_of_armies
 			local missing_continents = {}
 			local armies_to_put_in_missing_continents = 0
 			for continent_key, continent in pairs(continents) do
@@ -102,7 +102,7 @@ return {
 					end
 				end
 				if is_continent_of_territory then
-					for c, number_of_armies_to_put_in_continent in pairs(state.armies_arrangement.armies_to_put_by_continent) do
+					for c, number_of_armies_to_put_in_continent in pairs(state.armies_arrangement.remaining_armies_to_put_by_continent) do
 						if c ~= continent_key then
 							table.insert(missing_continents, { continent = idioms[state.idiom].continents[c], armies = number_of_armies_to_put_in_continent })
 							armies_to_put_in_missing_continents = armies_to_put_in_missing_continents + number_of_armies_to_put_in_continent
@@ -112,7 +112,7 @@ return {
 				end
 			end
 			if total_remaining_armies_to_put < armies_to_put_in_missing_continents then
-				local message = string.format(idioms[state.idiom].validations.player_has_only_x_armies_remaining_to_distribute_between_the_following_continents, state.armies_arrangement.total_armies_to_put)
+				local message = string.format(idioms[state.idiom].validations.player_has_only_x_armies_remaining_to_distribute_between_the_following_continents, state.armies_arrangement.remaining_armies_to_put)
 				table.sort(missing_continents, function(v1, v2) return v1.continent < v2.continent end)
 				for i, v in ipairs(missing_continents) do
 					message = string.format("%s\n%s - %s", message, v.continent, v.armies)

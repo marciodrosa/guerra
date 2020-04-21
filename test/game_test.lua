@@ -265,3 +265,125 @@ function test_game.test_should_not_start_game_if_there_is_less_then_two_players(
 	-- then:
 	lu.assertEquals(g.state.status, "not_started")
 end
+
+function test_game.test_should_put_enemies_in_territory()
+	-- given:
+	local g = game.new()
+	g.state.status = "arrange_armies"
+	g.state.current_player = 2
+	g.state.round_started_by_player = 1
+	g.state.territories = {
+		brazil = {
+			owner_player = 2,
+			armies = 5
+		}
+	}
+	g.state.armies_arrangement.total_armies_to_put = 4
+	g.state.armies_arrangement.remaining_armies_to_put = 4
+
+	-- when:
+	g.put(3, "brazil")
+
+	-- then:
+	lu.assertEquals(g.state.armies_arrangement.total_armies_to_put, 4, "Should keep the number of total armies to put.")
+	lu.assertEquals(g.state.armies_arrangement.remaining_armies_to_put, 1, "Should update the number of remaining armies to put.")
+	lu.assertEquals(g.state.armies_arrangement.armies_placed_by_territory.brazil, 3, "Should add the number of armies placed in the territory.")
+	lu.assertEquals(g.state.status, "arrange_armies", "Should still be in the arrange_armies status mode.")
+	lu.assertEquals(g.state.current_player, 2, "Should not change the current player.")
+	lu.assertEquals(g.state.territories.brazil.armies, 5, "Should not commit the placement in the territories until finish the arrangement.")
+end
+
+function test_game.test_should_put_enemies_in_territory_more_than_once()
+	-- given:
+	local g = game.new()
+	g.state.status = "arrange_armies"
+	g.state.current_player = 2
+	g.state.round_started_by_player = 1
+	g.state.territories = {
+		brazil = {
+			owner_player = 2,
+			armies = 5
+		},
+		moscow = {
+			owner_player = 2,
+			armies = 1
+		}
+	}
+	g.state.armies_arrangement.total_armies_to_put = 20
+	g.state.armies_arrangement.remaining_armies_to_put = 20
+
+	-- when:
+	g.put(3, "brazil")
+	g.put(2, "brazil")
+	g.put(1, "moscow")
+
+	-- then:
+	lu.assertEquals(g.state.armies_arrangement.remaining_armies_to_put, 14, "Should update the number of remaining armies to put.")
+	lu.assertEquals(g.state.armies_arrangement.armies_placed_by_territory.brazil, 5, "Should add the number of armies placed in the territory.")
+	lu.assertEquals(g.state.armies_arrangement.armies_placed_by_territory.moscow, 1, "Should add the number of armies placed in the territory.")
+end
+
+function test_game.test_should_not_put_enemies_in_territory_if_not_validated_because_territory_is_owned_by_another_player()
+	-- given:
+	local g = game.new()
+	g.state.status = "arrange_armies"
+	g.state.current_player = 2
+	g.state.round_started_by_player = 1
+	g.state.territories = {
+		brazil = {
+			owner_player = 3,
+			armies = 4
+		},
+		moscow = {
+			owner_player = 2,
+			armies = 2
+		}
+	}
+	g.state.armies_arrangement.total_armies_to_put = 10
+	g.state.armies_arrangement.remaining_armies_to_put = 10
+
+	-- when:
+	g.put(3, "brazil")
+
+	-- then:
+	lu.assertEquals(g.state.armies_arrangement.total_armies_to_put, 10, "Should keep the number of total armies to put.")
+	lu.assertEquals(g.state.armies_arrangement.remaining_armies_to_put, 10, "Should not update the number of remaining armies to put.")
+	lu.assertEquals(g.state.armies_arrangement.armies_placed_by_territory.brazil, nil, "Should not have armies in Brazil.")
+	lu.assertEquals(g.state.status, "arrange_armies", "Should still be in the arrange_armies status mode.")
+	lu.assertEquals(g.state.current_player, 2, "Should not change the current player.")
+end
+
+function test_game.test_should_commit_and_pass_to_next_player_after_put_all_armies()
+	-- given:
+	local g = game.new()
+	g.state.status = "arrange_armies"
+	g.state.players = {
+		{ name = "John", army = "red" },
+		{ name = "Paul", army = "blue" },
+		{ name = "Ringo", army = "green" },
+	}
+	g.state.current_player = 2
+	g.state.round_started_by_player = 1
+	g.state.territories = {
+		brazil = {
+			owner_player = 2,
+			armies = 5
+		},
+		moscow = {
+			owner_player = 2,
+			armies = 3
+		}
+	}
+	g.state.armies_arrangement.total_armies_to_put = 10
+	g.state.armies_arrangement.remaining_armies_to_put = 10
+
+	-- when:
+	g.put(5, "brazil")
+	g.put(5, "moscow")
+
+	-- then:
+	lu.assertEquals(g.state.status, "arrange_armies", "Should still be in the arrange_armies status mode.")
+	lu.assertEquals(g.state.current_player, 3, "Should change to the next player.")
+	lu.assertEquals(g.state.territories.brazil.armies, 10, "Should commit the placement in the territories after finish the arrangement.")
+	lu.assertEquals(g.state.territories.moscow.armies, 8, "Should commit the placement in the territories after finish the arrangement.")
+end

@@ -35,11 +35,10 @@ return {
 				total_armies_to_put = 0,
 				armies_to_put_by_territory = {},
 				armies_to_put_by_continent = {},
-				history = {
-					total_armies = 0,
-					armies_by_territory = {},
-					armies_by_continent = {},
-				}
+				remaining_armies_to_put = 0,
+				remaining_armies_to_put_by_territory = {},
+				remaining_armies_to_put_by_continent = {},
+				armies_placed_by_territory = {}
 			}
 		}
 		for k, v in pairs(territories) do

@@ -176,9 +176,9 @@ function test_validators.test_should_validate_put_armies()
 			}
 		},
 		armies_arrangement = {
-			total_armies_to_put = 3,
-			armies_to_put_by_territory = {},
-			armies_to_put_by_continent = {},
+			remaining_armies_to_put = 3,
+			remaining_armies_to_put_by_territory = {},
+			remaining_armies_to_put_by_continent = {},
 		}
 	}
 
@@ -198,9 +198,9 @@ function test_validators.test_should_not_validate_put_armies_if_territory_is_own
 			}
 		},
 		armies_arrangement = {
-			total_armies_to_put = 3,
-			armies_to_put_by_territory = {},
-			armies_to_put_by_continent = {},
+			remaining_armies_to_put = 3,
+			remaining_armies_to_put_by_territory = {},
+			remaining_armies_to_put_by_continent = {},
 		}
 	}
 
@@ -220,9 +220,9 @@ function test_validators.test_should_not_validate_put_armies_if_putting_more_arm
 			}
 		},
 		armies_arrangement = {
-			total_armies_to_put = 3,
-			armies_to_put_by_territory = {},
-			armies_to_put_by_continent = {},
+			remaining_armies_to_put = 3,
+			remaining_armies_to_put_by_territory = {},
+			remaining_armies_to_put_by_continent = {},
 		}
 	}
 
@@ -242,11 +242,11 @@ function test_validators.test_should_not_validate_put_armies_if_it_made_impossib
 			}
 		},
 		armies_arrangement = {
-			total_armies_to_put = 4,
-			armies_to_put_by_territory = {
+			remaining_armies_to_put = 4,
+			remaining_armies_to_put_by_territory = {
 				argentina = 2
 			},
-			armies_to_put_by_continent = {},
+			remaining_armies_to_put_by_continent = {},
 		}
 	}
 
@@ -266,12 +266,12 @@ function test_validators.test_should_not_validate_put_armies_if_it_made_impossib
 			}
 		},
 		armies_arrangement = {
-			total_armies_to_put = 5,
-			armies_to_put_by_territory = {
+			remaining_armies_to_put = 5,
+			remaining_armies_to_put_by_territory = {
 				argentina = 2,
 				moscow = 1
 			},
-			armies_to_put_by_continent = {},
+			remaining_armies_to_put_by_continent = {},
 		}
 	}
 
@@ -291,12 +291,12 @@ function test_validators.test_should_validate_put_armies_if_there_are_territorie
 			}
 		},
 		armies_arrangement = {
-			total_armies_to_put = 5,
-			armies_to_put_by_territory = {
+			remaining_armies_to_put = 5,
+			remaining_armies_to_put_by_territory = {
 				argentina = 2,
 				brazil = 2
 			},
-			armies_to_put_by_continent = {},
+			remaining_armies_to_put_by_continent = {},
 		}
 	}
 
@@ -316,12 +316,12 @@ function test_validators.test_should_not_validate_put_armies_if_there_are_other_
 			}
 		},
 		armies_arrangement = {
-			total_armies_to_put = 5,
-			armies_to_put_by_territory = {
+			remaining_armies_to_put = 5,
+			remaining_armies_to_put_by_territory = {
 				argentina = 2,
 				brazil = 2
 			},
-			armies_to_put_by_continent = {},
+			remaining_armies_to_put_by_continent = {},
 		}
 	}
 
@@ -341,9 +341,9 @@ function test_validators.test_should_not_validate_put_armies_if_it_made_impossib
 			}
 		},
 		armies_arrangement = {
-			total_armies_to_put = 4,
-			armies_to_put_by_territory = {},
-			armies_to_put_by_continent = {
+			remaining_armies_to_put = 4,
+			remaining_armies_to_put_by_territory = {},
+			remaining_armies_to_put_by_continent = {
 				europe = 2
 			},
 		}
@@ -365,9 +365,9 @@ function test_validators.test_should_not_validate_put_armies_if_it_made_impossib
 			}
 		},
 		armies_arrangement = {
-			total_armies_to_put = 7,
-			armies_to_put_by_territory = {},
-			armies_to_put_by_continent = {
+			remaining_armies_to_put = 7,
+			remaining_armies_to_put_by_territory = {},
+			remaining_armies_to_put_by_continent = {
 				europe = 2,
 				africa = 3
 			},
@@ -390,9 +390,9 @@ function test_validators.test_should_validate_put_armies_if_there_are_some_conti
 			}
 		},
 		armies_arrangement = {
-			total_armies_to_put = 7,
-			armies_to_put_by_territory = {},
-			armies_to_put_by_continent = {
+			remaining_armies_to_put = 7,
+			remaining_armies_to_put_by_territory = {},
+			remaining_armies_to_put_by_continent = {
 				south_america = 2,
 				africa = 4
 			},
@@ -415,9 +415,9 @@ function test_validators.test_should_not_validate_put_armies_if_there_are_some_o
 			}
 		},
 		armies_arrangement = {
-			total_armies_to_put = 7,
-			armies_to_put_by_territory = {},
-			armies_to_put_by_continent = {
+			remaining_armies_to_put = 7,
+			remaining_armies_to_put_by_territory = {},
+			remaining_armies_to_put_by_continent = {
 				south_america = 2,
 				africa = 4
 			},

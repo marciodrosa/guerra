@@ -3,11 +3,31 @@
 
 local idioms = require "idioms"
 local continents = require "continents"
+local territories = require "territories"
 
 local function expected_status(status)
-	return function(state)
-		if state.status ~= status then
-			error(idioms[state.idiom].validations.expected_status[status], 0)
+	if type(status) == "table" then
+		return function(state)
+			local status_valid = false
+			for i, v in ipairs(status) do
+				if v == state.status then
+					status_valid = true
+					break
+				end
+			end
+			if not status_valid then
+				local message = idioms[state.idiom].validations.unexpected_status_multiple
+				for i, v in ipairs(status) do
+					message = message.."\n"..idioms[state.idiom].validations.expected_status_multiple[v]
+				end
+				error(message, 0)
+			end
+		end
+	else
+		return function(state)
+			if state.status ~= status then
+				error(idioms[state.idiom].validations.expected_status[status], 0)
+			end
 		end
 	end
 end
@@ -158,6 +178,42 @@ return {
 				error(message, 0)
 			end
 		end
+	},
+
+	move_validations = {
+		expected_status { "arrange_armies", "moving_armies", "battle" },
+
+		function(state, number_of_armies, from_territory, to_territory)
+			if state.territories[from_territory].owner_player ~= state.current_player then
+				error(string.format(idioms[state.idiom].validations.origin_territory_does_not_belong_to_player, idioms[state.idiom].territories[from_territory]), 0)
+			end
+		end,
+
+		function(state, number_of_armies, from_territory, to_territory)
+			if state.territories[to_territory].owner_player ~= state.current_player then
+				error(string.format(idioms[state.idiom].validations.dest_territory_does_not_belong_to_player, idioms[state.idiom].territories[to_territory]), 0)
+			end
+		end,
+
+		function(state, number_of_armies, from_territory, to_territory)
+			local found_border_between_territories = false
+			for i, v in ipairs(territories[from_territory].borders) do
+				if v == to_territory then
+					found_border_between_territories = true
+					break
+				end
+			end
+			if not found_border_between_territories then
+				error(string.format(idioms[state.idiom].validations.territories_does_not_have_borders, idioms[state.idiom].territories[from_territory], idioms[state.idiom].territories[to_territory]), 0)
+			end
+		end
+	},
+
+	move_while_arrange_armies_validations = {
+
+		-- 1. have the amount of territories in origin?
+
+		-- 2. arent the territories mandatory?
 	}
 
 }

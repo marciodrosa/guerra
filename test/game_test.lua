@@ -346,3 +346,26 @@ function test_game.test_should_not_put_enemies_in_territory_if_not_validated_bec
 	lu.assertEquals(g.state.status, "arrange_armies", "Should still be in the arrange_armies status mode.")
 	lu.assertEquals(g.state.current_player, 2, "Should not change the current player.")
 end
+
+function test_game.test_should_move_while_in_arrangement_status()
+	-- given:
+	local g = game.new()
+	g.state.status = "arrange_armies"
+	g.state.current_player = 2
+	g.state.territories = {
+		brazil = { owner_player = 2 },
+		argentina = { owner_player = 2 },
+	}
+	g.state.armies_arrangement.total_armies_to_put = 10
+	g.state.armies_arrangement.armies_placed_by_territory = {
+		brazil = 3,
+		argentina = 4
+	}
+
+	-- when:
+	g.move(2, "brazil", "argentina")
+
+	-- then:
+	lu.assertEquals(g.state.armies_arrangement.armies_placed_by_territory.brazil, 1)
+	lu.assertEquals(g.state.armies_arrangement.armies_placed_by_territory.argentina, 6)
+end

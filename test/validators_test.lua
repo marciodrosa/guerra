@@ -20,6 +20,12 @@ local function execute_put_armies_validations(state, number_of_armies, territory
 	end
 end
 
+local function execute_move_validations(state, number_of_armies, from_territory, to_territory)
+	for i, f in ipairs(validators.move_validations) do
+		f(state, number_of_armies, from_territory, to_territory)
+	end
+end
+
 function test_validators.test_validate_enter_player()
 	-- given:
 	local state = {
@@ -466,4 +472,116 @@ function test_validators.test_should_not_validate_put_armies_if_there_are_other_
 
 	-- then:
 	lu.assertErrorMsgEquals("Jogador só possui mais 6 exércitos e obrigatoriamente precisa distribuir para os seguintes continentes:\nAmérica do Sul - 2", execute_put_armies_validations, state, 5, "madagascar")
+end
+
+function test_validators.test_should_validate_move()
+	-- given:
+	local state = {
+		idiom = "pt_br",
+		status = "arrange_armies",
+		current_player = 2,
+		territories = {
+			brazil = { owner_player = 2	},
+			argentina = { owner_player = 2	},
+		},
+	}
+
+	-- then:
+	execute_move_validations(state, 2, "brazil", "argentina")
+end
+
+function test_validators.test_should_validate_move_if_in_moving_armies_status()
+	-- given:
+	local state = {
+		idiom = "pt_br",
+		status = "moving_armies",
+		current_player = 2,
+		territories = {
+			brazil = { owner_player = 2	},
+			argentina = { owner_player = 2	},
+		},
+	}
+
+	-- then:
+	execute_move_validations(state, 2, "brazil", "argentina")
+end
+
+function test_validators.test_should_validate_move_if_in_battle_status()
+	-- given:
+	local state = {
+		idiom = "pt_br",
+		status = "battle",
+		current_player = 2,
+		territories = {
+			brazil = { owner_player = 2	},
+			argentina = { owner_player = 2	},
+		},
+	}
+
+	-- then:
+	execute_move_validations(state, 2, "brazil", "argentina")
+end
+
+function test_validators.test_should_not_validate_move_if_in_invalid_status()
+	-- given:
+	local state = {
+		idiom = "pt_br",
+		status = "not_started",
+		current_player = 2,
+		territories = {
+			brazil = { owner_player = 2	},
+			argentina = { owner_player = 2	},
+		},
+	}
+
+	-- then:
+	lu.assertErrorMsgEquals("Esta ação só pode ser realizada em um dos seguintes momentos:\nEnquanto os exércitos são posicionados\nEnquanto os exércitos são reposicionados\nDurante a batalha", execute_move_validations, state, 2, "brazil", "argentina")
+end
+
+function test_validators.test_should_not_validate_move_if_origin_does_not_belong_to_player()
+	-- given:
+	local state = {
+		idiom = "pt_br",
+		status = "arrange_armies",
+		current_player = 2,
+		territories = {
+			brazil = { owner_player = 1	},
+			argentina = { owner_player = 2	},
+		},
+	}
+
+	-- then:
+	lu.assertErrorMsgEquals("O território Brasil não pertence ao jogador.", execute_move_validations, state, 2, "brazil", "argentina")
+end
+
+function test_validators.test_should_not_validate_move_if_dest_does_not_belong_to_player()
+	-- given:
+	local state = {
+		idiom = "pt_br",
+		status = "arrange_armies",
+		current_player = 2,
+		territories = {
+			brazil = { owner_player = 2	},
+			argentina = { owner_player = 1	},
+		},
+	}
+
+	-- then:
+	lu.assertErrorMsgEquals("O território Argentina não pertence ao jogador.", execute_move_validations, state, 2, "brazil", "argentina")
+end
+
+function test_validators.test_should_not_validate_move_if_territories_does_not_have_borders()
+	-- given:
+	local state = {
+		idiom = "pt_br",
+		status = "arrange_armies",
+		current_player = 2,
+		territories = {
+			brazil = { owner_player = 2	},
+			dudinka = { owner_player = 2 },
+		},
+	}
+
+	-- then:
+	lu.assertErrorMsgEquals("Os territórios Brasil e Dudinka não fazem fronteira.", execute_move_validations, state, 2, "brazil", "dudinka")
 end

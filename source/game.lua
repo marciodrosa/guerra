@@ -153,6 +153,26 @@ return {
 			return true
 		end
 
+		local function validate_before_move_armies(number_of_armies, from_territory, to_territory)
+			for i, validator in ipairs(validators.move_validations) do
+				local ok, message = pcall(validator, state, number_of_armies, from_territory, to_territory)
+				if not ok then
+					return false
+				end
+			end
+			return true
+		end
+
+		local function validate_before_move_in_arrangement_status(number_of_armies, from_territory, to_territory)
+			for i, validator in ipairs(validators.move_while_arrange_armies_validations) do
+				local ok, message = pcall(validator, state, number_of_armies, from_territory, to_territory)
+				if not ok then
+					return false
+				end
+			end
+			return true
+		end
+
 		-- Adds a player to the game. Must be done before call the "start" function.
 		-- The army argument must be a valid color: black, white, blue, red, green or yellow.
 		-- It's not allowed to enter players with same name or army color.
@@ -188,6 +208,14 @@ return {
 		end
 
 		function game_instance.move(number_of_armies, from_territory, to_territory)
+			if validate_before_move_armies(number_of_armies, from_territory, to_territory) then
+				if state.status == "arrange_armies" then
+					if validate_before_move_in_arrangement_status(number_of_armies, from_territory, to_territory) then
+						state.armies_arrangement.armies_placed_by_territory[from_territory] = state.armies_arrangement.armies_placed_by_territory[from_territory] - number_of_armies
+						state.armies_arrangement.armies_placed_by_territory[to_territory] = state.armies_arrangement.armies_placed_by_territory[to_territory] + number_of_armies
+					end
+				end
+			end
 		end
 
 		function game_instance.abort()

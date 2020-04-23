@@ -15,10 +15,18 @@ return {
 		conquer_18_territories_with_2_armies_in_each = "SEU OBJETIVO É conquistar 18 TERRITÓRIOS e ocupar cada um deles com pelo menos dois exércitos.",
 		conquer_24_territories = "SEU OBJETIVO É conquistar 24 TERRITÓRIOS à sua escolha.",
 	},
+
 	validations = {
 		expected_status = {
 			not_started = "Esta ação só pode ser realizada antes do começo da partida.",
 		},
+		expected_status_multiple = {
+			not_started = "Antes do começo da partida",
+			arrange_armies = "Enquanto os exércitos são posicionados",
+			battle = "Durante a batalha",
+			moving_armies = "Enquanto os exércitos são reposicionados",
+		},
+		unexpected_status_multiple = "Esta ação só pode ser realizada em um dos seguintes momentos:",
 		max_number_of_players_already_achieved = "O máximo de jogadores já foi atingido (6).",
 		player_name_already_in_use = "Já existe um jogador com o nome %s.",
 		player_color_already_in_use = "Já existe um jogador com o exército %s.",
@@ -28,6 +36,9 @@ return {
 		player_has_only_x_armies_remaining_to_put = "Jogador só possui mais %s exércitos para colocar nos territórios.",
 		player_has_only_x_armies_remaining_to_distribute_between_the_following_territories = "Jogador só possui mais %s exércitos e obrigatoriamente precisa distribuir para os seguintes territórios:",
 		player_has_only_x_armies_remaining_to_distribute_between_the_following_continents = "Jogador só possui mais %s exércitos e obrigatoriamente precisa distribuir para os seguintes continentes:",
+		origin_territory_does_not_belong_to_player = "O território %s não pertence ao jogador.",
+		dest_territory_does_not_belong_to_player = "O território %s não pertence ao jogador.",
+		territories_does_not_have_borders = "Os territórios %s e %s não fazem fronteira.",
 	},
 	armies = {
 		blue = "Azul",

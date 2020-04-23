@@ -69,45 +69,10 @@ return {
 			state.cards_on_table = shuffle_list(state.cards_on_table)
 		end
 
-		local function go_to_next_player()
+		local function get_next_player()
 			local next_player = state.current_player + 1
 			if next_player > #state.players then next_player = 1 end
-			state.current_player = next_player
-		end
-
-		local function get_continent_of_territory(territory)
-			for continent_key, continent in pairs(continents) do
-				for i, territory_key in continent.territories do
-					if territory_key == territory then return continent_key end
-				end
-			end
-			return nil
-		end
-
-		local function recalculate_remaining_armies_to_put_on_arrangement()
-			local armies_arrangement = state.armies_arrangement
-			armies_arrangement.remaining_armies_to_put = armies_arrangement.total_armies_to_put
-			for k, v in pairs(armies_arrangement.armies_placed_by_territory) do
-				armies_arrangement.remaining_armies_to_put = armies_arrangement.remaining_armies_to_put - v
-			end
-			if armies_arrangement.remaining_armies_to_put < 0 then armies_arrangement.remaining_armies_to_put = 0 end
-			for territory_key, number_of_armies_to_put in pairs(armies_arrangement.armies_to_put_by_territory) do
-				local armies_placed_in_territory = armies_arrangement.armies_placed_by_territory[territory_key]
-				armies_arrangement.remaining_armies_to_put_by_territory[territory_key] = number_of_armies_to_put - armies_placed_in_territory
-				if armies_arrangement.remaining_armies_to_put_by_territory[territory_key] < 0 then
-					armies_arrangement.remaining_armies_to_put_by_territory[territory_key] = 0
-				end
-			end
-			for continent_key, number_of_armies_to_put in pairs(armies_arrangement.armies_to_put_by_continent) do
-				local armies_placed_in_continent = 0
-				for i, territory_key in ipairs(continents[continent_key].territories) do
-					armies_placed_in_continent = armies_placed_in_continent + armies_arrangement.armies_placed_by_territory[territory_key]
-				end
-				armies_arrangement.remaining_armies_to_put_by_continent[continent_key] = number_of_armies_to_put - armies_placed_in_continent
-				if armies_arrangement.remaining_armies_to_put_by_continent[continent_key] < 0 then
-					armies_arrangement.remaining_armies_to_put_by_continent[continent_key] = 0
-				end
-			end
+			return next_player
 		end
 
 		local function get_territories_owned_by_player()
@@ -135,9 +100,11 @@ return {
 			return result
 		end
 
-		local function init_armies_arrangement()
+		local function start_armies_arrangement(player)
+			state.status = "arrange_armies"
+			state.player = player
+			state.armies_arrangement.armies_placed_by_territory = {}
 			state.armies_arrangement.total_armies_to_put = math.floor(#get_territories_owned_by_player() / 2)
-			state.armies_arrangement.remaining_armies_to_put = state.armies_arrangement.total_armies_to_put
 			state.armies_arrangement.armies_to_put_by_territory = {}
 			state.armies_arrangement.armies_to_put_by_continent = {}
 			local owned_continents = get_continents_owned_by_player()
@@ -148,11 +115,6 @@ return {
 			for k, v in pairs(state.armies_arrangement.armies_to_put_by_territory) do
 				state.armies_arrangement.remaining_armies_to_put_by_territory[k] = v
 			end
-			state.armies_arrangement.remaining_armies_to_put_by_continent = {}
-			for k, v in pairs(state.armies_arrangement.armies_to_put_by_continent) do
-				state.armies_arrangement.remaining_armies_to_put_by_continent[k] = v
-			end
-			state.armies_arrangement.armies_placed_by_territory = {}
 		end
 
 		local function commit_arrangement()
@@ -209,14 +171,12 @@ return {
 				distribute_goals_to_players(game_instance.state)
 				distribute_territories_among_players(game_instance.state)
 				shuffle_and_cards_on_table(game_instance.state)
-				game_instance.state.status = "arrange_armies"
-				init_armies_arrangement()
+				start_armies_arrangement(game_instance.current_player)
 			end
 		end
 
-		-- Put the given amount of armies in the given territory. After the current player puts all the armies he had,
-		-- the game passes to the next player, unless the placement is invalid. In this case, call "abort" to restart
-		-- the placement or "move" to move from a previous placement to a new one.
+		-- Put the given amount of armies in the given territory. Function "abort" can be called to restart the placement
+		-- and "move" to edit it. Call "done" to commit.
 		function game_instance.put(number_of_armies, territory)
 			if validate_before_put_armies(number_of_armies, territory) then
 				local armies_arrangement = state.armies_arrangement
@@ -224,16 +184,6 @@ return {
 					armies_arrangement.armies_placed_by_territory[territory] = 0
 				end
 				armies_arrangement.armies_placed_by_territory[territory] = armies_arrangement.armies_placed_by_territory[territory] + number_of_armies
-				recalculate_remaining_armies_to_put_on_arrangement()
-				if armies_arrangement.remaining_armies_to_put == 0 then
-					commit_arrangement()
-					go_to_next_player()
-					if state.current_player == state.round_started_by_player then
-						game_instance.state.status = "battle"
-					else
-						init_armies_arrangement()
-					end
-				end
 			end
 		end
 
@@ -241,6 +191,9 @@ return {
 		end
 
 		function game_instance.abort()
+		end
+
+		function game_instance.done()
 		end
 
 		return game_instance

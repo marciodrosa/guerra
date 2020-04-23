@@ -176,9 +176,10 @@ function test_validators.test_should_validate_put_armies()
 			}
 		},
 		armies_arrangement = {
-			remaining_armies_to_put = 3,
-			remaining_armies_to_put_by_territory = {},
-			remaining_armies_to_put_by_continent = {},
+			total_armies_to_put = 3,
+			armies_to_put_by_territory = {},
+			armies_to_put_by_continent = {},
+			armies_placed_by_territory = {}
 		}
 	}
 
@@ -198,9 +199,10 @@ function test_validators.test_should_not_validate_put_armies_if_territory_is_own
 			}
 		},
 		armies_arrangement = {
-			remaining_armies_to_put = 3,
-			remaining_armies_to_put_by_territory = {},
-			remaining_armies_to_put_by_continent = {},
+			total_armies_to_put = 3,
+			armies_to_put_by_territory = {},
+			armies_to_put_by_continent = {},
+			armies_placed_by_territory = {}
 		}
 	}
 
@@ -220,9 +222,10 @@ function test_validators.test_should_not_validate_put_armies_if_putting_more_arm
 			}
 		},
 		armies_arrangement = {
-			remaining_armies_to_put = 3,
-			remaining_armies_to_put_by_territory = {},
-			remaining_armies_to_put_by_continent = {},
+			total_armies_to_put = 3,
+			armies_to_put_by_territory = {},
+			armies_to_put_by_continent = {},
+			armies_placed_by_territory = {}
 		}
 	}
 
@@ -242,11 +245,12 @@ function test_validators.test_should_not_validate_put_armies_if_it_made_impossib
 			}
 		},
 		armies_arrangement = {
-			remaining_armies_to_put = 4,
-			remaining_armies_to_put_by_territory = {
+			total_armies_to_put = 4,
+			armies_to_put_by_territory = {
 				argentina = 2
 			},
-			remaining_armies_to_put_by_continent = {},
+			armies_to_put_by_continent = {},
+			armies_placed_by_territory = {}
 		}
 	}
 
@@ -266,12 +270,13 @@ function test_validators.test_should_not_validate_put_armies_if_it_made_impossib
 			}
 		},
 		armies_arrangement = {
-			remaining_armies_to_put = 5,
-			remaining_armies_to_put_by_territory = {
+			total_armies_to_put = 5,
+			armies_to_put_by_territory = {
 				argentina = 2,
 				moscow = 1
 			},
-			remaining_armies_to_put_by_continent = {},
+			armies_to_put_by_continent = {},
+			armies_placed_by_territory = {}
 		}
 	}
 
@@ -291,12 +296,13 @@ function test_validators.test_should_validate_put_armies_if_there_are_territorie
 			}
 		},
 		armies_arrangement = {
-			remaining_armies_to_put = 5,
-			remaining_armies_to_put_by_territory = {
+			total_armies_to_put = 5,
+			armies_to_put_by_territory = {
 				argentina = 2,
 				brazil = 2
 			},
-			remaining_armies_to_put_by_continent = {},
+			armies_to_put_by_continent = {},
+			armies_placed_by_territory = {}
 		}
 	}
 
@@ -304,7 +310,7 @@ function test_validators.test_should_validate_put_armies_if_there_are_territorie
 	execute_put_armies_validations(state, 3, "brazil")
 end
 
-function test_validators.test_should_not_validate_put_armies_if_there_are_other_territories_to_receive_armies()
+function test_validators.test_should_not_validate_put_armies_if_the_territory_is_mandatory_but_there_are_others_also_mandatory()
 	-- given:
 	local state = {
 		idiom = "pt_br",
@@ -316,12 +322,13 @@ function test_validators.test_should_not_validate_put_armies_if_there_are_other_
 			}
 		},
 		armies_arrangement = {
-			remaining_armies_to_put = 5,
-			remaining_armies_to_put_by_territory = {
+			total_armies_to_put = 5,
+			armies_to_put_by_territory = {
 				argentina = 2,
 				brazil = 2
 			},
-			remaining_armies_to_put_by_continent = {},
+			armies_to_put_by_continent = {},
+			armies_placed_by_territory = {}
 		}
 	}
 
@@ -341,11 +348,12 @@ function test_validators.test_should_not_validate_put_armies_if_it_made_impossib
 			}
 		},
 		armies_arrangement = {
-			remaining_armies_to_put = 4,
-			remaining_armies_to_put_by_territory = {},
-			remaining_armies_to_put_by_continent = {
+			total_armies_to_put = 4,
+			armies_to_put_by_continent = {
 				europe = 2
 			},
+			armies_to_put_by_territory = {},
+			armies_placed_by_territory = {}
 		}
 	}
 
@@ -365,12 +373,13 @@ function test_validators.test_should_not_validate_put_armies_if_it_made_impossib
 			}
 		},
 		armies_arrangement = {
-			remaining_armies_to_put = 7,
-			remaining_armies_to_put_by_territory = {},
-			remaining_armies_to_put_by_continent = {
+			total_armies_to_put = 7,
+			armies_to_put_by_continent = {
 				europe = 2,
 				africa = 3
 			},
+			armies_to_put_by_territory = {},
+			armies_placed_by_territory = {}
 		}
 	}
 
@@ -390,12 +399,13 @@ function test_validators.test_should_validate_put_armies_if_there_are_some_conti
 			}
 		},
 		armies_arrangement = {
-			remaining_armies_to_put = 7,
-			remaining_armies_to_put_by_territory = {},
-			remaining_armies_to_put_by_continent = {
+			total_armies_to_put = 7,
+			armies_to_put_by_continent = {
 				south_america = 2,
-				africa = 4
+				africa = 3
 			},
+			armies_to_put_by_territory = {},
+			armies_placed_by_territory = {}
 		}
 	}
 
@@ -415,15 +425,45 @@ function test_validators.test_should_not_validate_put_armies_if_there_are_some_o
 			}
 		},
 		armies_arrangement = {
-			remaining_armies_to_put = 7,
-			remaining_armies_to_put_by_territory = {},
-			remaining_armies_to_put_by_continent = {
+			total_armies_to_put = 7,
+			armies_to_put_by_continent = {
 				south_america = 2,
 				africa = 4
 			},
+			armies_to_put_by_territory = {},
+			armies_placed_by_territory = {}
 		}
 	}
 
 	-- then:
 	lu.assertErrorMsgEquals("Jogador só possui mais 7 exércitos e obrigatoriamente precisa distribuir para os seguintes continentes:\nÁfrica - 4", execute_put_armies_validations, state, 4, "brazil")
+end
+
+function test_validators.test_should_not_validate_put_armies_if_there_are_other_countries_in_the_same_continent_that_must_receive_armies()
+	-- given:
+	local state = {
+		idiom = "pt_br",
+		status = "arrange_armies",
+		current_player = 2,
+		territories = {
+			brazil = { owner_player = 2	},
+			madagascar = { owner_player = 2	},
+		},
+		armies_arrangement = {
+			total_armies_to_put = 8,
+			armies_to_put_by_continent = {
+				south_america = 2,
+				africa = 3
+			},
+			armies_to_put_by_territory = {
+				brazil = 2,
+			},
+			armies_placed_by_territory = {
+				brazil = 2
+			}
+		}
+	}
+
+	-- then:
+	lu.assertErrorMsgEquals("Jogador só possui mais 6 exércitos e obrigatoriamente precisa distribuir para os seguintes continentes:\nAmérica do Sul - 2", execute_put_armies_validations, state, 5, "madagascar")
 end

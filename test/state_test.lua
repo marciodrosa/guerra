@@ -29,8 +29,5 @@ function test_state.test_should_create_new_state()
 	lu.assertEquals(s.armies_arrangement.total_armies_to_put, 0)
 	lu.assertIsTable(s.armies_arrangement.armies_to_put_by_territory)
 	lu.assertIsTable(s.armies_arrangement.armies_to_put_by_continent)
-	lu.assertEquals(s.armies_arrangement.remaining_armies_to_put, 0)
-	lu.assertIsTable(s.armies_arrangement.remaining_armies_to_put_by_territory)
-	lu.assertIsTable(s.armies_arrangement.remaining_armies_to_put_by_continent)
 	lu.assertIsTable(s.armies_arrangement.armies_placed_by_territory)
 end

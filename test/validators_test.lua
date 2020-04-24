@@ -26,6 +26,12 @@ local function execute_move_validations(state, number_of_armies, from_territory,
 	end
 end
 
+local function execute_move_while_arrange_validations(state, number_of_armies, from_territory, to_territory)
+	for i, f in ipairs(validators.move_while_arrange_armies_validations) do
+		f(state, number_of_armies, from_territory, to_territory)
+	end
+end
+
 function test_validators.test_validate_enter_player()
 	-- given:
 	local state = {
@@ -585,3 +591,57 @@ function test_validators.test_should_not_validate_move_if_territories_does_not_h
 	-- then:
 	lu.assertErrorMsgEquals("Os territórios Brasil e Dudinka não fazem fronteira.", execute_move_validations, state, 2, "brazil", "dudinka")
 end
+
+function test_validators.test_should_validate_move_while_arrange()
+	-- given:
+	local state = {
+		idiom = "pt_br",
+		status = "arrange_armies",
+		current_player = 2,
+		armies_arrangement = {
+			armies_placed_by_territory = {
+				brazil = 2,
+				argentina = 0,
+			}
+		},
+	}
+
+	-- then:
+	execute_move_while_arrange_validations(state, 2, "brazil", "argentina")
+end
+
+function test_validators.test_should_not_validate_move_from_a_territory_without_armies_placed_on_arrangement()
+	-- given:
+	local state = {
+		idiom = "pt_br",
+		status = "arrange_armies",
+		current_player = 2,
+		armies_arrangement = {
+			armies_placed_by_territory = {
+				argentina = 2,
+			}
+		},
+	}
+
+	-- then:
+	lu.assertErrorMsgEquals("Não é possível mover do território de origem Brasil porque nenhum exército foi colocado ali.", execute_move_while_arrange_validations, state, 2, "brazil", "argentina")
+end
+
+function test_validators.test_should_not_validate_move_from_a_territory_with_less_armies_placed_on_arrangement_than_requested()
+	-- given:
+	local state = {
+		idiom = "pt_br",
+		status = "arrange_armies",
+		current_player = 2,
+		armies_arrangement = {
+			armies_placed_by_territory = {
+				brazil = 2,
+				argentina = 3,
+			}
+		},
+	}
+
+	-- then:
+	lu.assertErrorMsgEquals("Só há 2 exércitos no território de origem.", execute_move_while_arrange_validations, state, 3, "brazil", "argentina")
+end
+

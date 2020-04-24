@@ -211,9 +211,19 @@ return {
 
 	move_while_arrange_armies_validations = {
 
-		-- 1. have the amount of territories in origin?
+		function(state, number_of_armies, from_territory, to_territory)
+			if (state.armies_arrangement.armies_placed_by_territory[from_territory] or 0) == 0 then
+				error(string.format(idioms[state.idiom].validations.no_armies_placed_in_origin_on_arrangement, idioms[state.idiom].territories[from_territory]), 0)
+			end
+		end,
 
-		-- 2. arent the territories mandatory?
+		function(state, number_of_armies, from_territory, to_territory)
+			if state.armies_arrangement.armies_placed_by_territory[from_territory] < number_of_armies then
+				error(string.format(idioms[state.idiom].validations.does_not_have_enough_armies_in_origin_on_arrangement, state.armies_arrangement.armies_placed_by_territory[from_territory]), 0)
+			end
+		end
+
+		-- todo arent the territories mandatory?
 	}
 
 }

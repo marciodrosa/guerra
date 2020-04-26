@@ -336,7 +336,7 @@ function test_validators.test_should_not_validate_put_armies_if_it_made_impossib
 	}
 
 	-- then:
-	lu.assertErrorMsgEquals("Jogador só possui mais 4 exércitos e obrigatoriamente precisa distribuir para os seguintes territórios:\nArgentina - 2", execute_put_armies_validations, state, 4, "brazil")
+	lu.assertErrorMsgEquals("Jogador só possui mais 4 exército(s) e obrigatoriamente precisa distribuir para os seguintes territórios:\nArgentina - 2", execute_put_armies_validations, state, 4, "brazil")
 end
 
 function test_validators.test_should_not_validate_put_armies_if_it_made_impossible_to_put_mandatory_armies_in_many_other_territories()
@@ -362,7 +362,7 @@ function test_validators.test_should_not_validate_put_armies_if_it_made_impossib
 	}
 
 	-- then:
-	lu.assertErrorMsgEquals("Jogador só possui mais 5 exércitos e obrigatoriamente precisa distribuir para os seguintes territórios:\nArgentina - 2\nMoscou - 1", execute_put_armies_validations, state, 3, "brazil")
+	lu.assertErrorMsgEquals("Jogador só possui mais 5 exército(s) e obrigatoriamente precisa distribuir para os seguintes territórios:\nArgentina - 2\nMoscou - 1", execute_put_armies_validations, state, 3, "brazil")
 end
 
 function test_validators.test_should_validate_put_armies_if_there_are_territories_to_receive_armies_but_the_current_is_one_of_them()
@@ -414,7 +414,7 @@ function test_validators.test_should_not_validate_put_armies_if_the_territory_is
 	}
 
 	-- then:
-	lu.assertErrorMsgEquals("Jogador só possui mais 5 exércitos e obrigatoriamente precisa distribuir para os seguintes territórios:\nArgentina - 2", execute_put_armies_validations, state, 4, "brazil")
+	lu.assertErrorMsgEquals("Jogador só possui mais 5 exército(s) e obrigatoriamente precisa distribuir para os seguintes territórios:\nArgentina - 2", execute_put_armies_validations, state, 4, "brazil")
 end
 
 function test_validators.test_should_not_validate_put_armies_if_it_made_impossible_to_put_mandatory_armies_in_another_continent()
@@ -439,7 +439,7 @@ function test_validators.test_should_not_validate_put_armies_if_it_made_impossib
 	}
 
 	-- then:
-	lu.assertErrorMsgEquals("Jogador só possui mais 4 exércitos e obrigatoriamente precisa distribuir para os seguintes continentes:\nEuropa - 2", execute_put_armies_validations, state, 4, "brazil")
+	lu.assertErrorMsgEquals("Jogador só possui mais 4 exército(s) e obrigatoriamente precisa distribuir para os seguintes continentes:\nEuropa - 2", execute_put_armies_validations, state, 4, "brazil")
 end
 
 function test_validators.test_should_not_validate_put_armies_if_it_made_impossible_to_put_mandatory_armies_in_many_other_continents()
@@ -465,7 +465,7 @@ function test_validators.test_should_not_validate_put_armies_if_it_made_impossib
 	}
 
 	-- then:
-	lu.assertErrorMsgEquals("Jogador só possui mais 7 exércitos e obrigatoriamente precisa distribuir para os seguintes continentes:\nEuropa - 2\nÁfrica - 3", execute_put_armies_validations, state, 3, "brazil")
+	lu.assertErrorMsgEquals("Jogador só possui mais 7 exército(s) e obrigatoriamente precisa distribuir para os seguintes continentes:\nEuropa - 2\nÁfrica - 3", execute_put_armies_validations, state, 3, "brazil")
 end
 
 function test_validators.test_should_validate_put_armies_if_there_are_some_continents_to_receive_armies_but_the_territory_is_from_that_continent()
@@ -517,7 +517,7 @@ function test_validators.test_should_not_validate_put_armies_if_there_are_some_o
 	}
 
 	-- then:
-	lu.assertErrorMsgEquals("Jogador só possui mais 7 exércitos e obrigatoriamente precisa distribuir para os seguintes continentes:\nÁfrica - 4", execute_put_armies_validations, state, 4, "brazil")
+	lu.assertErrorMsgEquals("Jogador só possui mais 7 exército(s) e obrigatoriamente precisa distribuir para os seguintes continentes:\nÁfrica - 4", execute_put_armies_validations, state, 4, "brazil")
 end
 
 function test_validators.test_should_not_validate_put_armies_if_there_are_other_countries_in_the_same_continent_that_must_receive_armies()
@@ -546,7 +546,7 @@ function test_validators.test_should_not_validate_put_armies_if_there_are_other_
 	}
 
 	-- then:
-	lu.assertErrorMsgEquals("Jogador só possui mais 6 exércitos e obrigatoriamente precisa distribuir para os seguintes continentes:\nAmérica do Sul - 2", execute_put_armies_validations, state, 5, "madagascar")
+	lu.assertErrorMsgEquals("Jogador só possui mais 6 exército(s) e obrigatoriamente precisa distribuir para os seguintes continentes:\nAmérica do Sul - 2", execute_put_armies_validations, state, 5, "madagascar")
 end
 
 function test_validators.test_should_validate_move()
@@ -671,7 +671,10 @@ function test_validators.test_should_validate_move_while_arrange()
 			armies_placed_by_territory = {
 				brazil = 2,
 				argentina = 0,
-			}
+			},
+			armies_to_put_by_territory = {},
+			armies_to_put_by_continent = {},
+			total_armies_to_put = 10,
 		},
 	}
 
@@ -688,7 +691,10 @@ function test_validators.test_should_not_validate_move_from_a_territory_without_
 		armies_arrangement = {
 			armies_placed_by_territory = {
 				argentina = 2,
-			}
+			},
+			armies_to_put_by_territory = {},
+			armies_to_put_by_continent = {},
+			total_armies_to_put = 10,
 		},
 	}
 
@@ -706,11 +712,69 @@ function test_validators.test_should_not_validate_move_from_a_territory_with_les
 			armies_placed_by_territory = {
 				brazil = 2,
 				argentina = 3,
-			}
+			},
+			armies_to_put_by_territory = {},
+			armies_to_put_by_continent = {},
+			total_armies_to_put = 10,
 		},
 	}
 
 	-- then:
 	lu.assertErrorMsgEquals("Só há 2 exércitos no território de origem.", execute_move_while_arrange_validations, state, 3, "brazil", "argentina")
+end
+
+function test_validators.test_should_not_validate_move_if_it_will_make_impossible_to_fill_mandatory_territories()
+	-- given:
+	local state = {
+		idiom = "pt_br",
+		status = "moving_armies",
+		current_player = 2,
+		territories = {
+			brazil = { owner_player = 2	},
+			argentina = { owner_player = 2	},
+		},
+		armies_arrangement = {
+			total_armies_to_put = 6,
+			armies_placed_by_territory = {
+				brazil = 2,
+				argentina = 3,
+			},
+			armies_to_put_by_territory = {
+				brazil = 2,
+			},
+			armies_to_put_by_continent = {}
+		},
+	}
+
+	-- then:
+	lu.assertErrorMsgEquals("Jogador só possui mais 1 exército(s) e obrigatoriamente precisa distribuir para os seguintes territórios:\nBrasil - 2", execute_move_while_arrange_validations, state, 2, "brazil", "argentina")
+end
+
+function test_validators.test_should_not_validate_move_if_it_will_make_impossible_to_fill_mandatory_continents()
+	-- given:
+	local state = {
+		idiom = "pt_br",
+		status = "moving_armies",
+		current_player = 2,
+		territories = {
+			algeria = { owner_player = 2	},
+			brazil = { owner_player = 2	},
+		},
+		armies_arrangement = {
+			total_armies_to_put = 6,
+			armies_placed_by_territory = {
+				algeria = 2,
+				brazil = 3,
+			},
+			armies_to_put_by_territory = {
+			},
+			armies_to_put_by_continent = {
+				africa = 2,
+			}
+		},
+	}
+
+	-- then:
+	lu.assertErrorMsgEquals("Jogador só possui mais 1 exército(s) e obrigatoriamente precisa distribuir para os seguintes continentes:\nÁfrica - 2", execute_move_while_arrange_validations, state, 2, "algeria", "brazil")
 end
 

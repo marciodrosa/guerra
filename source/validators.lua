@@ -283,9 +283,29 @@ return {
 			if state.armies_arrangement.armies_placed_by_territory[from_territory] < number_of_armies then
 				error(string.format(idioms[state.idiom].validations.does_not_have_enough_armies_in_origin_on_arrangement, state.armies_arrangement.armies_placed_by_territory[from_territory]), 0)
 			end
-		end
+		end,
 
-		-- todo arent the territories mandatory?
+		function(state, number_of_armies, from_territory, to_territory)
+			local future_placement = simulate_armies_move(state.armies_arrangement.armies_placed_by_territory, number_of_armies, from_territory, to_territory)
+			local total_missing_armies, missing_territories_description = get_missing_mandatory_armies_in_territories_after_new_placement(state, state.armies_arrangement, future_placement)
+			local armies_still_available_to_put = get_number_of_remaining_armies_to_put_in_arrangement(state)
+			if armies_still_available_to_put < total_missing_armies then
+				local message = string.format(idioms[state.idiom].validations.player_has_only_x_armies_remaining_to_distribute_between_the_following_territories, get_number_of_remaining_armies_to_put_in_arrangement(state))
+				message = message.."\n"..missing_territories_description
+				error(message, 0)
+			end
+		end,
+
+		function(state, number_of_armies, from_territory, to_territory)
+			local future_placement = simulate_armies_move(state.armies_arrangement.armies_placed_by_territory, number_of_armies, from_territory, to_territory)
+			local total_missing_armies, missing_continents_description = get_missing_mandatory_armies_by_continent_after_new_placement(state, state.armies_arrangement, future_placement)
+			local armies_still_available_to_put = get_number_of_remaining_armies_to_put_in_arrangement(state)
+			if armies_still_available_to_put < total_missing_armies then
+				local message = string.format(idioms[state.idiom].validations.player_has_only_x_armies_remaining_to_distribute_between_the_following_continents, get_number_of_remaining_armies_to_put_in_arrangement(state))
+				message = message.."\n"..missing_continents_description
+				error(message, 0)
+			end
+		end
 	}
 
 }

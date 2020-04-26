@@ -199,6 +199,75 @@ function test_validators.test_should_validate_put_armies()
 	execute_put_armies_validations(state, 3, "brazil")
 end
 
+function test_validators.test_should_not_validate_put_armies_if_number_is_zero()
+	-- given:
+	local state = {
+		idiom = "pt_br",
+		status = "arrange_armies",
+		current_player = 2,
+		territories = {
+			brazil = {
+				owner_player = 2
+			}
+		},
+		armies_arrangement = {
+			total_armies_to_put = 3,
+			armies_to_put_by_territory = {},
+			armies_to_put_by_continent = {},
+			armies_placed_by_territory = {}
+		}
+	}
+
+	-- then:
+	lu.assertErrorMsgEquals("Número deve ser positivo.", execute_put_armies_validations, state, 0, "brazil")
+end
+
+function test_validators.test_should_not_validate_put_armies_if_number_is_smaller_than_zero()
+	-- given:
+	local state = {
+		idiom = "pt_br",
+		status = "arrange_armies",
+		current_player = 2,
+		territories = {
+			brazil = {
+				owner_player = 2
+			}
+		},
+		armies_arrangement = {
+			total_armies_to_put = 3,
+			armies_to_put_by_territory = {},
+			armies_to_put_by_continent = {},
+			armies_placed_by_territory = {}
+		}
+	}
+
+	-- then:
+	lu.assertErrorMsgEquals("Número deve ser positivo.", execute_put_armies_validations, state, -1, "brazil")
+end
+
+function test_validators.test_should_not_validate_put_armies_if_number_is_invalid()
+	-- given:
+	local state = {
+		idiom = "pt_br",
+		status = "arrange_armies",
+		current_player = 2,
+		territories = {
+			brazil = {
+				owner_player = 2
+			}
+		},
+		armies_arrangement = {
+			total_armies_to_put = 3,
+			armies_to_put_by_territory = {},
+			armies_to_put_by_continent = {},
+			armies_placed_by_territory = {}
+		}
+	}
+
+	-- then:
+	lu.assertErrorMsgEquals("Número inválido.", execute_put_armies_validations, state, "abc", "brazil")
+end
+
 function test_validators.test_should_not_validate_put_armies_if_territory_is_owned_by_another_player()
 	-- given:
 	local state = {

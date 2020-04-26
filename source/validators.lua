@@ -38,6 +38,29 @@ local function validate_army_color(state, army)
 	end
 end
 
+local function validate_type(state, value, expected_type)
+	if type(value) ~= expected_type then
+		if expected_type == "number" then
+			error(idioms[state.idiom].validations.invalid_number, 0)
+		else
+			error(idioms[state.idiom].validations.invalid_value, 0)
+		end
+	end
+end
+
+local function validate_positive_number(state, number)
+	validate_type(state, number, "number")
+	if number <= 0 then
+		error(idioms[state.idiom].validations.number_must_be_positive, 0)
+	end
+end
+
+local function validate_territory(state, territory)
+	if territories[territory] == nil then
+		error(idioms[state.idiom].validations.unknow_territory, 0)
+	end
+end
+
 local function get_number_of_armies_placed(armies_placed_by_territory)
 	local count = 0
 	for k, v in pairs(armies_placed_by_territory) do
@@ -57,6 +80,16 @@ local function simulate_armies_placement(current_placement, number_of_armies_to_
 	end
 	if result[territory] == nil then result[territory] = 0 end
 	result[territory] = result[territory] + number_of_armies_to_put
+	return result
+end
+
+local function simulate_armies_move(current_placement, number_of_armies_to_move, from_territory, to_territory)
+	local result = {}
+	for k, v in pairs(current_placement) do
+		result[k] = v
+	end
+	result[from_territory] = result[from_territory] - number_of_armies_to_move
+	result[to_territory] = result[to_territory] + number_of_armies_to_move
 	return result
 end
 
@@ -132,6 +165,14 @@ return {
 		expected_status("arrange_armies"),
 
 		function(state, number_of_armies, territory)
+			validate_territory(state, territory)
+		end,
+
+		function(state, number_of_armies, territory)
+			validate_positive_number(state, number_of_armies)
+		end,
+
+		function(state, number_of_armies, territory)
 			if state.territories[territory].owner_player ~= state.current_player then
 				error(string.format(idioms[state.idiom].validations.cant_put_armies_in_territory_that_is_not_owned_by_player, idioms[state.idiom].territories[territory]), 0)
 			end
@@ -182,6 +223,15 @@ return {
 
 	move_validations = {
 		expected_status { "arrange_armies", "moving_armies", "battle" },
+
+		function(state, number_of_armies, from_territory, to_territory)
+			validate_territory(state, from_territory)
+			validate_territory(state, to_territory)
+		end,
+
+		function(state, number_of_armies, from_territory, to_territory)
+			validate_positive_number(state, number_of_armies)
+		end,
 
 		function(state, number_of_armies, from_territory, to_territory)
 			if state.territories[from_territory].owner_player ~= state.current_player then

@@ -93,37 +93,61 @@ local function simulate_armies_move(current_placement, number_of_armies_to_move,
 	return result
 end
 
-local function get_missing_mandatory_armies_by_territory_after_put(armies_arrangement, number_of_armies_to_put, territory)
-	local new_placement = simulate_armies_placement(armies_arrangement.armies_placed_by_territory, number_of_armies_to_put, territory)
-	local result = {}
-	local total_missing_armies = 0
-	for territory_key, armies_to_put in pairs(armies_arrangement.armies_to_put_by_territory) do
-		local current_armies_placed_in_territory = new_placement[territory_key] or 0
-		if armies_to_put > current_armies_placed_in_territory then
-			result[territory_key] = armies_to_put - current_armies_placed_in_territory
-			total_missing_armies = total_missing_armies + result[territory_key]
-		end
+local function convert_missing_mandatory_armies_by_territory_to_string(state, missing_mandatory_armies_by_territory)
+	local descriptions = {}
+	for k, v in pairs(missing_mandatory_armies_by_territory) do
+		table.insert(descriptions, string.format("%s - %s", idioms[state.idiom].territories[k], v))
 	end
-	return result, total_missing_armies
+	table.sort(descriptions)
+	local result = ""
+	for i, v in ipairs(descriptions) do
+		if i == 1 then result = v else result = string.format("%s\n%s", result, v) end
+	end
+	return result
 end
 
-local function get_missing_mandatory_armies_by_continent_after_put(armies_arrangement, number_of_armies_to_put, territory)
-	local new_placement = simulate_armies_placement(armies_arrangement.armies_placed_by_territory, number_of_armies_to_put, territory)
-	local result = {}
+local function get_missing_mandatory_armies_in_territories_after_new_placement(state, current_armies_arrangement, new_placement)
+	local missing_mandatory_armies_by_territory = {}
 	local total_missing_armies = 0
-	for continent_key, armies_to_put in pairs(armies_arrangement.armies_to_put_by_continent) do
+	for territory_key, armies_to_put in pairs(current_armies_arrangement.armies_to_put_by_territory) do
+		local current_armies_placed_in_territory = new_placement[territory_key] or 0
+		if armies_to_put > current_armies_placed_in_territory then
+			missing_mandatory_armies_by_territory[territory_key] = armies_to_put - current_armies_placed_in_territory
+			total_missing_armies = total_missing_armies + missing_mandatory_armies_by_territory[territory_key]
+		end
+	end
+	return total_missing_armies, convert_missing_mandatory_armies_by_territory_to_string(state, missing_mandatory_armies_by_territory)
+end
+
+local function convert_missing_mandatory_armies_by_continent_to_string(state, missing_mandatory_armies_by_continent)
+	local descriptions = {}
+	for k, v in pairs(missing_mandatory_armies_by_continent) do
+		table.insert(descriptions, string.format("%s - %s", idioms[state.idiom].continents[k], v))
+	end
+	table.sort(descriptions)
+	local result = ""
+	for i, v in ipairs(descriptions) do
+		if i == 1 then result = v else result = string.format("%s\n%s", result, v) end
+	end
+	return result
+end
+
+local function get_missing_mandatory_armies_by_continent_after_new_placement(state, current_armies_arrangement, new_placement)
+	local missing_mandatory_armies_by_continent = {}
+	local total_missing_armies = 0
+	for continent_key, armies_to_put in pairs(current_armies_arrangement.armies_to_put_by_continent) do
 		local armies_placed_in_continent = 0
 		for i, territory in ipairs(continents[continent_key].territories) do
 			local armies_placed_in_territory = new_placement[territory] or 0
-			local armies_to_put_in_territory = armies_arrangement.armies_to_put_by_territory[territory] or 0
+			local armies_to_put_in_territory = current_armies_arrangement.armies_to_put_by_territory[territory] or 0
 			armies_placed_in_continent = armies_placed_in_continent + armies_placed_in_territory - armies_to_put_in_territory
 		end
 		if armies_to_put > armies_placed_in_continent then
-			result[continent_key] = armies_to_put - armies_placed_in_continent
-			total_missing_armies = total_missing_armies + result[continent_key]
+			missing_mandatory_armies_by_continent[continent_key] = armies_to_put - armies_placed_in_continent
+			total_missing_armies = total_missing_armies + missing_mandatory_armies_by_continent[continent_key]
 		end
 	end
-	return result, total_missing_armies
+	return total_missing_armies, convert_missing_mandatory_armies_by_continent_to_string(state, missing_mandatory_armies_by_continent)
 end
 
 return {
@@ -187,35 +211,23 @@ return {
 		end,
 
 		function(state, number_of_armies, territory)
-			local missing_mandatory_armies_by_territory, total_missing_armies = get_missing_mandatory_armies_by_territory_after_put(state.armies_arrangement, number_of_armies, territory)
+			local future_placement = simulate_armies_placement(state.armies_arrangement.armies_placed_by_territory, number_of_armies, territory)
+			local total_missing_armies, missing_territories_description = get_missing_mandatory_armies_in_territories_after_new_placement(state, state.armies_arrangement, future_placement)
 			local armies_still_available_to_put = get_number_of_remaining_armies_to_put_in_arrangement(state) - number_of_armies
 			if armies_still_available_to_put < total_missing_armies then
-				local missing_territories_descriptions = {}
-				for k, v in pairs(missing_mandatory_armies_by_territory) do
-					table.insert(missing_territories_descriptions, string.format("%s - %s", idioms[state.idiom].territories[k], v))
-				end
-				table.sort(missing_territories_descriptions)
 				local message = string.format(idioms[state.idiom].validations.player_has_only_x_armies_remaining_to_distribute_between_the_following_territories, get_number_of_remaining_armies_to_put_in_arrangement(state))
-				for i, v in ipairs(missing_territories_descriptions) do
-					message = string.format("%s\n%s", message, v)
-				end
+				message = message.."\n"..missing_territories_description
 				error(message, 0)
 			end
 		end,
 
 		function(state, number_of_armies, territory)
-			local missing_mandatory_armies_by_continent, total_missing_armies = get_missing_mandatory_armies_by_continent_after_put(state.armies_arrangement, number_of_armies, territory)
+			local future_placement = simulate_armies_placement(state.armies_arrangement.armies_placed_by_territory, number_of_armies, territory)
+			local total_missing_armies, missing_continents_description = get_missing_mandatory_armies_by_continent_after_new_placement(state, state.armies_arrangement, future_placement)
 			local armies_still_available_to_put = get_number_of_remaining_armies_to_put_in_arrangement(state) - number_of_armies
 			if armies_still_available_to_put < total_missing_armies then
-				local missing_continents_descriptions = {}
-				for k, v in pairs(missing_mandatory_armies_by_continent) do
-					table.insert(missing_continents_descriptions, string.format("%s - %s", idioms[state.idiom].continents[k], v))
-				end
-				table.sort(missing_continents_descriptions)
 				local message = string.format(idioms[state.idiom].validations.player_has_only_x_armies_remaining_to_distribute_between_the_following_continents, get_number_of_remaining_armies_to_put_in_arrangement(state))
-				for i, v in ipairs(missing_continents_descriptions) do
-					message = string.format("%s\n%s", message, v)
-				end
+				message = message.."\n"..missing_continents_description
 				error(message, 0)
 			end
 		end

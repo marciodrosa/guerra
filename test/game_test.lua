@@ -369,3 +369,26 @@ function test_game.test_should_move_while_in_arrangement_status()
 	lu.assertEquals(g.state.armies_arrangement.armies_placed_by_territory.brazil, 1)
 	lu.assertEquals(g.state.armies_arrangement.armies_placed_by_territory.argentina, 6)
 end
+
+function test_game.test_should_abort_enemies_arrangement()
+	-- given:
+	local g = game.new()
+	g.state.status = "arrange_armies"
+	g.state.current_player = 2
+	g.state.territories = {
+		brazil = { owner_player = 2 },
+		argentina = { owner_player = 2 },
+	}
+	g.state.armies_arrangement.total_armies_to_put = 10
+	g.put(3, "argentina")
+	g.put(2, "brazil")
+	g.put(1, "argentina")
+	g.move(2, "argentina", "brazil")
+
+	-- when:
+	g.abort()
+
+	-- then:
+	lu.assertNil(g.state.armies_arrangement.armies_placed_by_territory.brazil)		
+	lu.assertNil(g.state.armies_arrangement.armies_placed_by_territory.argentina)		
+end

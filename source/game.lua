@@ -173,6 +173,16 @@ return {
 			return true
 		end
 
+		local function validate_before_abort()
+			for i, validator in ipairs(validators.abort_validations) do
+				local ok, message = pcall(validator, state)
+				if not ok then
+					return false
+				end
+			end
+			return true
+		end
+
 		-- Adds a player to the game. Must be done before call the "start" function.
 		-- The army argument must be a valid color: black, white, blue, red, green or yellow.
 		-- It's not allowed to enter players with same name or army color.
@@ -207,6 +217,7 @@ return {
 			end
 		end
 
+		-- Moves the given amount of armies from one territory to another.
 		function game_instance.move(number_of_armies, from_territory, to_territory)
 			if validate_before_move_armies(number_of_armies, from_territory, to_territory) then
 				if state.status == "arrange_armies" then
@@ -219,6 +230,11 @@ return {
 		end
 
 		function game_instance.abort()
+			if validate_before_abort() then
+				if state.status == "arrange_armies" then
+					state.armies_arrangement.armies_placed_by_territory = {}
+				end
+			end
 		end
 
 		function game_instance.done()
@@ -227,5 +243,3 @@ return {
 		return game_instance
 	end
 }
-
---armies_when_conquered

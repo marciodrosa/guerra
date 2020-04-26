@@ -306,6 +306,10 @@ return {
 				error(message, 0)
 			end
 		end
+	},
+
+	abort_validations = {
+		expected_status { "arrange_armies", "moving_armies" },
 	}
 
 }

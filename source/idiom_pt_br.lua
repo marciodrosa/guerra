@@ -45,6 +45,7 @@ return {
 		territories_does_not_have_borders = "Os territórios %s e %s não fazem fronteira.",
 		no_armies_placed_in_origin_on_arrangement = "Não é possível mover do território de origem %s porque nenhum exército foi colocado ali.",
 		does_not_have_enough_armies_in_origin_on_arrangement = "Só há %s exércitos no território de origem.",
+		player_still_have_x_armies_to_put = "Jogador ainda possui %s exército(s) para colocar.",
 	},
 	armies = {
 		blue = "Azul",

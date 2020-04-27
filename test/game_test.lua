@@ -392,3 +392,83 @@ function test_game.test_should_abort_enemies_arrangement()
 	lu.assertNil(g.state.armies_arrangement.armies_placed_by_territory.brazil)		
 	lu.assertNil(g.state.armies_arrangement.armies_placed_by_territory.argentina)		
 end
+
+function test_game.test_should_done_enemies_arrangement()
+	-- given:
+	local g = game.new()
+	g.state.status = "arrange_armies"
+	g.state.current_player = 2
+	g.state.territories = {
+		brazil = { owner_player = 2, armies = 10 },
+		argentina = { owner_player = 2, armies = 20 },
+	}
+	g.state.armies_arrangement.total_armies_to_put = 6
+	g.put(3, "argentina")
+	g.put(2, "brazil")
+	g.put(1, "argentina")
+	g.move(2, "argentina", "brazil")
+
+	-- when:
+	g.done()
+
+	-- then:
+	lu.assertEquals(g.state.territories.brazil.armies, 14)
+	lu.assertEquals(g.state.territories.argentina.armies, 22)
+end
+
+function test_game.test_should_done_enemies_arrangement_and_go_to_next_player()
+	-- given:
+	local g = game.new()
+	g.state.status = "arrange_armies"
+	g.state.players = {
+		{ name = "John", army = "red" },
+		{ name = "Paul", army = "blue" },
+		{ name = "Ringo", army = "white" },
+		{ name = "George", army = "black" },
+	}
+	g.state.current_player = 2
+	g.state.round_started_by_player = 1
+	g.state.territories = {
+		brazil = { owner_player = 2, armies = 10 },
+		argentina = { owner_player = 2, armies = 20 },
+	}
+	g.state.armies_arrangement.total_armies_to_put = 6
+	g.put(3, "argentina")
+	g.put(3, "brazil")
+
+	-- when:
+	g.done()
+
+	-- then:
+	lu.assertEquals(g.state.current_player, 3)
+	lu.assertEquals(g.state.status, "arrange_armies")
+end
+
+function test_game.test_should_done_enemies_arrangement_and_start_battle_after_last_player()
+	-- given:
+	local g = game.new()
+	g.state.status = "arrange_armies"
+	g.state.players = {
+		{ name = "John", army = "red" },
+		{ name = "Paul", army = "blue" },
+		{ name = "Ringo", army = "white" },
+		{ name = "George", army = "black" },
+	}
+	g.state.current_player = 2
+	g.state.round_started_by_player = 3
+	g.state.territories = {
+		brazil = { owner_player = 2, armies = 10 },
+		argentina = { owner_player = 2, armies = 20 },
+	}
+	g.state.armies_arrangement.total_armies_to_put = 6
+	g.put(3, "argentina")
+	g.put(3, "brazil")
+
+	-- when:
+	g.done()
+
+	-- then:
+	lu.assertEquals(g.state.current_player, 3)
+	lu.assertEquals(g.state.status, "battle")
+end
+

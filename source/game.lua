@@ -102,7 +102,7 @@ return {
 
 		local function start_armies_arrangement(player)
 			state.status = "arrange_armies"
-			state.player = player
+			state.current_player = player
 			state.armies_arrangement.armies_placed_by_territory = {}
 			state.armies_arrangement.total_armies_to_put = math.floor(#get_territories_owned_by_player() / 2)
 			state.armies_arrangement.armies_to_put_by_territory = {}
@@ -121,6 +121,11 @@ return {
 			for territory_key, armies in pairs(state.armies_arrangement.armies_placed_by_territory) do
 				state.territories[territory_key].armies = state.territories[territory_key].armies + armies
 			end
+		end
+
+		local function start_battle(player)
+			state.status = "battle"
+			state.current_player = player
 		end
 
 		local function validate_before_enter_player(name, army)
@@ -183,12 +188,32 @@ return {
 			return true
 		end
 
+		local function validate_before_done()
+			for i, validator in ipairs(validators.done_validations) do
+				local ok, message = pcall(validator, state)
+				if not ok then
+					return false
+				end
+			end
+			return true
+		end
+
+		local function validate_before_done_put_armies()
+			for i, validator in ipairs(validators.done_put_armies_validations) do
+				local ok, message = pcall(validator, state)
+				if not ok then
+					return false
+				end
+			end
+			return true
+		end
+
 		-- Adds a player to the game. Must be done before call the "start" function.
 		-- The army argument must be a valid color: black, white, blue, red, green or yellow.
 		-- It's not allowed to enter players with same name or army color.
 		function game_instance.enter_player(name, army)
 			if validate_before_enter_player(name, army) then
-				table.insert(game_instance.state.players, { name = name, army = army })
+				table.insert(state.players, { name = name, army = army })
 			end
 		end
 
@@ -197,11 +222,11 @@ return {
 		-- have entered the game before the start.
 		function game_instance.start()
 			if validate_before_start_game() then
-				draw_player_to_start(game_instance.state)
-				distribute_goals_to_players(game_instance.state)
-				distribute_territories_among_players(game_instance.state)
-				shuffle_and_cards_on_table(game_instance.state)
-				start_armies_arrangement(game_instance.current_player)
+				draw_player_to_start(state)
+				distribute_goals_to_players(state)
+				distribute_territories_among_players(state)
+				shuffle_and_cards_on_table(state)
+				start_armies_arrangement(state.current_player)
 			end
 		end
 
@@ -229,6 +254,7 @@ return {
 			end
 		end
 
+		-- Aborts the current enemies arrangement, restarting to the initial state of the placement.
 		function game_instance.abort()
 			if validate_before_abort() then
 				if state.status == "arrange_armies" then
@@ -237,7 +263,21 @@ return {
 			end
 		end
 
+		-- Finishes the current army placement or finishes the attack.
 		function game_instance.done()
+			if validate_before_done() then
+				if state.status == "arrange_armies" then
+					if validate_before_done_put_armies() then
+						commit_arrangement()
+						local next_player = get_next_player()
+						if next_player == state.round_started_by_player then
+							start_battle(next_player)
+						else
+							start_armies_arrangement(next_player)
+						end
+					end
+				end
+			end
 		end
 
 		return game_instance

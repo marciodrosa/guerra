@@ -32,6 +32,24 @@ local function execute_move_while_arrange_validations(state, number_of_armies, f
 	end
 end
 
+local function execute_abort_validations(state)
+	for i, f in ipairs(validators.abort_validations) do
+		f(state)
+	end
+end
+
+local function execute_done_validations(state)
+	for i, f in ipairs(validators.done_validations) do
+		f(state)
+	end
+end
+
+local function execute_done_put_armies_validations(state)
+	for i, f in ipairs(validators.done_put_armies_validations) do
+		f(state)
+	end
+end
+
 function test_validators.test_validate_enter_player()
 	-- given:
 	local state = {
@@ -778,3 +796,119 @@ function test_validators.test_should_not_validate_move_if_it_will_make_impossibl
 	lu.assertErrorMsgEquals("Jogador só possui mais 1 exército(s) e obrigatoriamente precisa distribuir para os seguintes continentes:\nÁfrica - 2", execute_move_while_arrange_validations, state, 2, "algeria", "brazil")
 end
 
+function test_validators.test_should_validate_abort_when_arranging_armies()
+	-- given:
+	local state = {
+		idiom = "pt_br",
+		status = "arrange_armies",
+	}
+
+	-- then:
+	execute_abort_validations(state)
+end
+
+function test_validators.test_should_validate_abort_when_moving_armies()
+	-- given:
+	local state = {
+		idiom = "pt_br",
+		status = "moving_armies",
+	}
+
+	-- then:
+	execute_abort_validations(state)
+end
+
+function test_validators.test_should_not_validate_abort_when_in_battle()
+	-- given:
+	local state = {
+		idiom = "pt_br",
+		status = "battle",
+	}
+
+	-- then:
+	lu.assertErrorMsgEquals("Esta ação só pode ser realizada em um dos seguintes momentos:\nEnquanto os exércitos são posicionados\nEnquanto os exércitos são reposicionados", execute_abort_validations, state)
+end
+
+function test_validators.test_should_validate_done_when_arranging_armies()
+	-- given:
+	local state = {
+		idiom = "pt_br",
+		status = "arrange_armies",
+	}
+
+	-- then:
+	execute_done_validations(state)
+end
+
+function test_validators.test_should_validate_done_when_moving_armies()
+	-- given:
+	local state = {
+		idiom = "pt_br",
+		status = "moving_armies",
+	}
+
+	-- then:
+	execute_done_validations(state)
+end
+
+function test_validators.test_should_validate_done_when_in_battle()
+	-- given:
+	local state = {
+		idiom = "pt_br",
+		status = "battle",
+	}
+
+	-- then:
+	execute_done_validations(state)
+end
+
+function test_validators.test_should_not_validate_done_when_game_is_not_started()
+	-- given:
+	local state = {
+		idiom = "pt_br",
+		status = "not_started",
+	}
+
+	-- then:
+	lu.assertErrorMsgEquals("Esta ação só pode ser realizada em um dos seguintes momentos:\nEnquanto os exércitos são posicionados\nEnquanto os exércitos são reposicionados\nDurante a batalha", execute_done_validations, state)
+end
+
+function test_validators.test_should_validate_done_put_armies()
+	-- given:
+	local state = {
+		idiom = "pt_br",
+		status = "armies_arrangement",
+		armies_arrangement = {
+			total_armies_to_put = 5,
+			armies_to_put_by_territory = {},
+			armies_to_put_by_continent = {},
+			armies_placed_by_territory = {
+				brazil = 2,
+				argentina = 3
+			}
+		}
+	}
+
+	-- then:
+	execute_done_put_armies_validations(state)
+end
+
+function test_validators.test_should_not_validate_done_put_armies_if_there_are_still_armies_to_put()
+	-- given:
+	local state = {
+		idiom = "pt_br",
+		status = "armies_arrangement",
+		armies_arrangement = {
+			total_armies_to_put = 5,
+			armies_to_put_by_territory = {},
+			armies_to_put_by_continent = {},
+			armies_placed_by_territory = {
+				brazil = 2,
+				argentina = 2
+			}
+		}
+	}
+
+	-- then:
+	lu.assertErrorMsgEquals("Jogador ainda possui 1 exército(s) para colocar.", execute_done_put_armies_validations, state)
+end

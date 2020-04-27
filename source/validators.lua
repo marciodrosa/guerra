@@ -213,8 +213,8 @@ return {
 		function(state, number_of_armies, territory)
 			local future_placement = simulate_armies_placement(state.armies_arrangement.armies_placed_by_territory, number_of_armies, territory)
 			local total_missing_armies, missing_territories_description = get_missing_mandatory_armies_in_territories_after_new_placement(state, state.armies_arrangement, future_placement)
-			local armies_still_available_to_put = get_number_of_remaining_armies_to_put_in_arrangement(state) - number_of_armies
-			if armies_still_available_to_put < total_missing_armies then
+			local armies_still_remaining_to_put = get_number_of_remaining_armies_to_put_in_arrangement(state) - number_of_armies
+			if armies_still_remaining_to_put < total_missing_armies then
 				local message = string.format(idioms[state.idiom].validations.player_has_only_x_armies_remaining_to_distribute_between_the_following_territories, get_number_of_remaining_armies_to_put_in_arrangement(state))
 				message = message.."\n"..missing_territories_description
 				error(message, 0)
@@ -224,8 +224,8 @@ return {
 		function(state, number_of_armies, territory)
 			local future_placement = simulate_armies_placement(state.armies_arrangement.armies_placed_by_territory, number_of_armies, territory)
 			local total_missing_armies, missing_continents_description = get_missing_mandatory_armies_by_continent_after_new_placement(state, state.armies_arrangement, future_placement)
-			local armies_still_available_to_put = get_number_of_remaining_armies_to_put_in_arrangement(state) - number_of_armies
-			if armies_still_available_to_put < total_missing_armies then
+			local armies_still_remaining_to_put = get_number_of_remaining_armies_to_put_in_arrangement(state) - number_of_armies
+			if armies_still_remaining_to_put < total_missing_armies then
 				local message = string.format(idioms[state.idiom].validations.player_has_only_x_armies_remaining_to_distribute_between_the_following_continents, get_number_of_remaining_armies_to_put_in_arrangement(state))
 				message = message.."\n"..missing_continents_description
 				error(message, 0)
@@ -288,8 +288,8 @@ return {
 		function(state, number_of_armies, from_territory, to_territory)
 			local future_placement = simulate_armies_move(state.armies_arrangement.armies_placed_by_territory, number_of_armies, from_territory, to_territory)
 			local total_missing_armies, missing_territories_description = get_missing_mandatory_armies_in_territories_after_new_placement(state, state.armies_arrangement, future_placement)
-			local armies_still_available_to_put = get_number_of_remaining_armies_to_put_in_arrangement(state)
-			if armies_still_available_to_put < total_missing_armies then
+			local armies_still_remaining_to_put = get_number_of_remaining_armies_to_put_in_arrangement(state)
+			if armies_still_remaining_to_put < total_missing_armies then
 				local message = string.format(idioms[state.idiom].validations.player_has_only_x_armies_remaining_to_distribute_between_the_following_territories, get_number_of_remaining_armies_to_put_in_arrangement(state))
 				message = message.."\n"..missing_territories_description
 				error(message, 0)
@@ -299,8 +299,8 @@ return {
 		function(state, number_of_armies, from_territory, to_territory)
 			local future_placement = simulate_armies_move(state.armies_arrangement.armies_placed_by_territory, number_of_armies, from_territory, to_territory)
 			local total_missing_armies, missing_continents_description = get_missing_mandatory_armies_by_continent_after_new_placement(state, state.armies_arrangement, future_placement)
-			local armies_still_available_to_put = get_number_of_remaining_armies_to_put_in_arrangement(state)
-			if armies_still_available_to_put < total_missing_armies then
+			local armies_still_remaining_to_put = get_number_of_remaining_armies_to_put_in_arrangement(state)
+			if armies_still_remaining_to_put < total_missing_armies then
 				local message = string.format(idioms[state.idiom].validations.player_has_only_x_armies_remaining_to_distribute_between_the_following_continents, get_number_of_remaining_armies_to_put_in_arrangement(state))
 				message = message.."\n"..missing_continents_description
 				error(message, 0)
@@ -310,6 +310,19 @@ return {
 
 	abort_validations = {
 		expected_status { "arrange_armies", "moving_armies" },
-	}
+	},
+
+	done_validations = {
+		expected_status { "arrange_armies", "moving_armies", "battle" },
+	},
+
+	done_put_armies_validations = {
+		function(state)
+			local armies_still_available_to_put = get_number_of_remaining_armies_to_put_in_arrangement(state)
+			if armies_still_available_to_put > 0 then
+				error(string.format(idioms[state.idiom].validations.player_still_have_x_armies_to_put, armies_still_available_to_put), 0)
+			end
+		end
+	},
 
 }

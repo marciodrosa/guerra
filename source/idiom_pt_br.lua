@@ -15,10 +15,12 @@ return {
 		conquer_18_territories_with_2_armies_in_each = "SEU OBJETIVO É conquistar 18 TERRITÓRIOS e ocupar cada um deles com pelo menos dois exércitos.",
 		conquer_24_territories = "SEU OBJETIVO É conquistar 24 TERRITÓRIOS à sua escolha.",
 	},
-
 	validations = {
 		expected_status = {
 			not_started = "Esta ação só pode ser realizada antes do começo da partida.",
+			arrange_armies = "Esta ação só pode ser realizada enquanto os exércitos são posicionados.",
+			battle = "Esta ação só pode ser realizada durante a batalha.",
+			moving_armies = "Esta ação só pode ser realizada enquanto os exércitos são reposicionados.",
 		},
 		expected_status_multiple = {
 			not_started = "Antes do começo da partida",
@@ -46,6 +48,9 @@ return {
 		no_armies_placed_in_origin_on_arrangement = "Não é possível mover do território de origem %s porque nenhum exército foi colocado ali.",
 		does_not_have_enough_armies_in_origin_on_arrangement = "Só há %s exércitos no território de origem.",
 		player_still_have_x_armies_to_put = "Jogador ainda possui %s exército(s) para colocar.",
+		attacker_territory_does_not_belong_to_player = "O território %s não pertence ao jogador.",
+		attacked_territory_belongs_to_player = "O jogador não pode atacar o próprio território (%s).",
+		cant_attack_with_less_than_two_armies = "É necessário ter ao menos dois exércitos no território para atacar.",
 	},
 	armies = {
 		blue = "Azul",

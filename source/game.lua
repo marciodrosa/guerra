@@ -208,6 +208,16 @@ return {
 			return true
 		end
 
+		local function validate_attack(from_territory, to_territory)
+			for i, validator in ipairs(validators.attack_validations) do
+				local ok, message = pcall(validator, state, from_territory, to_territory)
+				if not ok then
+					return false
+				end
+			end
+			return true
+		end
+
 		-- Adds a player to the game. Must be done before call the "start" function.
 		-- The army argument must be a valid color: black, white, blue, red, green or yellow.
 		-- It's not allowed to enter players with same name or army color.
@@ -277,6 +287,11 @@ return {
 						end
 					end
 				end
+			end
+		end
+
+		function game_instance.attack(from_territory, to_territory)
+			if validate_attack(from_territory, to_territory) then
 			end
 		end
 

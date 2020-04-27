@@ -50,6 +50,12 @@ local function execute_done_put_armies_validations(state)
 	end
 end
 
+local function execute_attack_validations(state, from_territory, to_territory)
+	for i, f in ipairs(validators.attack_validations) do
+		f(state, from_territory, to_territory)
+	end
+end
+
 function test_validators.test_validate_enter_player()
 	-- given:
 	local state = {
@@ -911,4 +917,84 @@ function test_validators.test_should_not_validate_done_put_armies_if_there_are_s
 
 	-- then:
 	lu.assertErrorMsgEquals("Jogador ainda possui 1 exército(s) para colocar.", execute_done_put_armies_validations, state)
+end
+
+function test_validators.test_should_validate_attack()
+	-- given:
+	local state = {
+		idiom = "pt_br",
+		status = "battle",
+		current_player = 1,
+		territories = {
+			brazil = { armies = 2, owner_player = 1 },
+			argentina = { armies = 1, owner_player = 2 },
+		}
+	}
+
+	-- then:
+	execute_attack_validations(state, "brazil", "argentina")
+end
+
+function test_validators.test_should_not_validate_attack_if_not_in_battle()
+	-- given:
+	local state = {
+		idiom = "pt_br",
+		status = "armies_arrangement",
+		current_player = 1,
+		territories = {
+			brazil = { armies = 2, owner_player = 1 },
+			argentina = { armies = 1, owner_player = 2 },
+		}
+	}
+
+	-- then:
+	lu.assertErrorMsgEquals("Esta ação só pode ser realizada durante a batalha.", execute_attack_validations, state, "brazil", "argentina")
+end
+
+function test_validators.test_should_not_validate_attack_if_source_territory_does_not_belong_to_player()
+	-- given:
+	local state = {
+		idiom = "pt_br",
+		status = "battle",
+		current_player = 1,
+		territories = {
+			brazil = { armies = 2, owner_player = 3 },
+			argentina = { armies = 1, owner_player = 2 },
+		}
+	}
+
+	-- then:
+	lu.assertErrorMsgEquals("O território Brasil não pertence ao jogador.", execute_attack_validations, state, "brazil", "argentina")
+end
+
+function test_validators.test_should_not_validate_attack_if_dest_territory_belongs_to_player()
+	-- given:
+	local state = {
+		idiom = "pt_br",
+		status = "battle",
+		current_player = 1,
+		territories = {
+			brazil = { armies = 2, owner_player = 1 },
+			argentina = { armies = 1, owner_player = 1 },
+		}
+	}
+
+	-- then:
+	lu.assertErrorMsgEquals("O jogador não pode atacar o próprio território (Argentina).", execute_attack_validations, state, "brazil", "argentina")
+end
+
+function test_validators.test_should_not_validate_attack_if_dest_territory_only_have_one_army()
+	-- given:
+	local state = {
+		idiom = "pt_br",
+		status = "battle",
+		current_player = 1,
+		territories = {
+			brazil = { armies = 1, owner_player = 1 },
+			argentina = { armies = 1, owner_player = 2 },
+		}
+	}
+
+	-- then:
+	lu.assertErrorMsgEquals("É necessário ter ao menos dois exércitos no território para atacar.", execute_attack_validations, state, "brazil", "argentina")
 end

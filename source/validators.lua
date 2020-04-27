@@ -150,6 +150,17 @@ local function get_missing_mandatory_armies_by_continent_after_new_placement(sta
 	return total_missing_armies, convert_missing_mandatory_armies_by_continent_to_string(state, missing_mandatory_armies_by_continent)
 end
 
+local function does_territories_have_borders(territory1, territory2)
+	local found_border_between_territories = false
+	for i, v in ipairs(territories[territory1].borders) do
+		if v == territory2 then
+			found_border_between_territories = true
+			break
+		end
+	end
+	return found_border_between_territories
+end
+
 return {
 
 	-- List of functions to be called with 3 arguments: the state, the name of the player and the army color.
@@ -258,14 +269,7 @@ return {
 		end,
 
 		function(state, number_of_armies, from_territory, to_territory)
-			local found_border_between_territories = false
-			for i, v in ipairs(territories[from_territory].borders) do
-				if v == to_territory then
-					found_border_between_territories = true
-					break
-				end
-			end
-			if not found_border_between_territories then
+			if not does_territories_have_borders(from_territory, to_territory) then
 				error(string.format(idioms[state.idiom].validations.territories_does_not_have_borders, idioms[state.idiom].territories[from_territory], idioms[state.idiom].territories[to_territory]), 0)
 			end
 		end
@@ -324,5 +328,33 @@ return {
 			end
 		end
 	},
+
+	attack_validations = {
+		expected_status("battle"),
+
+		function(state, from_territory, to_territory)
+			if state.territories[from_territory].owner_player ~= state.current_player then
+				error(string.format(idioms[state.idiom].validations.attacker_territory_does_not_belong_to_player, idioms[state.idiom].territories[from_territory]), 0)
+			end
+		end,
+
+		function(state, from_territory, to_territory)
+			if state.territories[to_territory].owner_player == state.current_player then
+				error(string.format(idioms[state.idiom].validations.attacked_territory_belongs_to_player, idioms[state.idiom].territories[to_territory]), 0)
+			end
+		end,
+
+		function(state, from_territory, to_territory)
+			if state.territories[from_territory].armies < 2 then
+				error(idioms[state.idiom].validations.cant_attack_with_less_than_two_armies, 0)
+			end
+		end,
+
+		function(state, from_territory, to_territory)
+			if not does_territories_have_borders(from_territory, to_territory) then
+				error(string.format(idioms[state.idiom].validations.territories_does_not_have_borders, idioms[state.idiom].territories[from_territory], idioms[state.idiom].territories[to_territory]), 0)
+			end
+		end,
+	}
 
 }
